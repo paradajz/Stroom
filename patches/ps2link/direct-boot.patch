@@ -1,0 +1,127 @@
+--- a/ee/ps2link.c
++++ b/ee/ps2link.c
+@@ -27,6 +27,8 @@
+ #include "excepHandler.h"
+ #include "cmdHandler.h"
+ #include "globals.h"
++#include "platform/boot/path.h"
++#include "platform/memorycard/card.h"
+ 
+ ////////////////////////////////////////////////////////////////////////
+ 
+@@ -62,8 +64,13 @@
+     int fd;
+     int len;
+ 
+-    fd = open("IPCONFIG.DAT", O_RDONLY);
++    char path[MAXNAMLEN];
+ 
++    if (platform_boot_config_path(path, sizeof(path), elfName, "IPCONFIG.DAT") != 0)
++        return -1;
++
++    fd = open(path, O_RDONLY);
++
+     if (fd < 0) {
+         dbgprintf("Error reading ipconfig.dat\n");
+         return -1;
+@@ -94,7 +101,7 @@
+     return 0;
+ }
+ 
+-static void getIpConfig(void)
++static void getIpConfig(int read_file)
+ {
+     int i;
+     int t;
+@@ -105,7 +112,7 @@
+     memset(buf, 0x00, IPCONF_MAX_LEN);
+     memset(buf, 0x00, IPCONF_MAX_LEN);
+ 
+-    if (readIpConfigFromFile(buf))
++    if (!read_file || readIpConfigFromFile(buf))
+         readDefaultIpConfig(buf);
+ 
+     i = 0;
+@@ -126,32 +133,11 @@
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////
+-// Wrapper to load irx module from disc/rom
+-static void pkoLoadModule(char *path, int argc, char *argv)
+-{
+-    int ret;
+-
+-    ret = SifLoadModule(path, argc, argv);
+-    if (ret < 0) {
+-        scr_printf("Could not load module %s: %d\n", path, ret);
+-        SleepThread();
+-    }
+-    dbgscr_printf("Load %s, returned [%d]\n", path, ret);
+-}
+-
+-////////////////////////////////////////////////////////////////////////
+ // Load all the irx modules we need
+ static void loadModules(void)
+ {
+     int ret;
+ 
+-    if (if_conf_len == 0) {
+-        pkoLoadModule("rom0:SIO2MAN", 0, NULL);
+-        pkoLoadModule("rom0:MCMAN", 0, NULL);
+-        pkoLoadModule("rom0:MCSERV", 0, NULL);
+-        return;
+-    }
+-
+     dbgscr_printf("Exec poweroff module. (%x,%d) ", (unsigned int)poweroff_irx, size_poweroff_irx);
+     SifExecModuleBuffer(poweroff_irx, size_poweroff_irx, 0, NULL, &ret);
+     dbgscr_printf("[%d] returned\n", ret);
+@@ -218,18 +204,19 @@
+     SifInitRpc(0);
+     init_scr();
+ 
++    snprintf(elfName, sizeof(elfName), "%s", platform_boot_executable(argc, argv));
+     printWelcomeInfo();
+     if (if_conf_len == 0) {
+-        scr_printf("Initial boot, will load config then reset\n");
+-        getIpConfig();
+-        pkoReset(); // Will restart execution
++        int card_ready = platform_memorycard_open(elfName) == 0;
++        if (!card_ready)
++            scr_printf("Memory-card settings unavailable; using defaults\n");
++        getIpConfig(card_ready);
+     }
+ 
+     installExceptionHandlers();
+     restartIOP();
+ 
+-    strcpy(elfName, argv[0]);
+-    dbgscr_printf("argv[0] is %s\n", elfName);   
++    dbgscr_printf("boot path is %s\n", elfName);   
+ 
+     dbgscr_printf("loading modules\n");
+     loadModules();
+--- a/ee/cmdHandler.c
++++ b/ee/cmdHandler.c
+@@ -833,8 +833,9 @@
+     SifInitRpc(0);
+     SifExitRpc();
+ 
+-    SifIopReset(NULL, 0);
+-    while (SifIopSync())
++    while (!SifIopReset(NULL, 0))
++        ;
++    while (!SifIopSync())
+         ;
+ 
+     SifInitRpc(0);
+--- a/ee/Makefile
++++ b/ee/Makefile
+@@ -8,6 +8,8 @@
+ 
+ # This is for the sbv patch
+ EE_LIBS += -lpatches -ldebug -lgskit -ldmakit
++EE_OBJS += boot_memorycard.o boot_modules.o
++EE_LIBS += -lmc
+ 
+ # IRX libs
+ IRX_FILES += ioptrap.irx ps2dev9.irx poweroff.irx

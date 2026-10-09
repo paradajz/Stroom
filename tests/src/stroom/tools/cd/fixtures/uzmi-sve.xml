@@ -1,0 +1,23 @@
+<ctdb xmlns="http://db.cuetools.net/ns/mmd-1.0#" xmlns:ext="http://db.cuetools.net/ns/ext-1.0#">
+ <entry />
+ <metadata album="Uzmi sve" artist="IVANA BRKIC" genre="Pop" id="misc/0a100f12" relevance="100" source="freedb" year="2002">
+  <track name="Samo suti" />
+  <track name="Nije me sram" />
+  <track name="SMS 2003" />
+  <track name="Ljubomora" />
+  <track name="Uzmi sve" />
+  <track name="I ne bih rekla ne" />
+  <track name="Da mi je 25" />
+  <track name="Kao pjesma" />
+  <track name="Da si bar ovdje sada" />
+  <track name="Pustinja 2003" />
+  <track name="Prva pomoc" />
+  <track name="Oci boje kestena" />
+  <track name="Poljupcem cu reci" />
+  <track name="Up where we belong" />
+  <track name="Angel of mine" />
+  <track name="SMS - original verzija" />
+  <track name="Da si bar ovdje sada - epilog" />
+  <track name="Samo suti - extended version" />
+ </metadata>
+</ctdb>

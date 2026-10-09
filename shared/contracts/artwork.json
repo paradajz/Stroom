@@ -1,0 +1,6 @@
+{
+  "ARTWORK_MAX_BYTES": {
+    "value": 2097152,
+    "description": "Maximum compressed artwork size in bytes accepted by the console."
+  }
+}

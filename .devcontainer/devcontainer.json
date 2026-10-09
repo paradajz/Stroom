@@ -1,0 +1,23 @@
+{
+  "name": "Stroom",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "remoteUser": "vscode",
+  "postStartCommand": "make sdk",
+  "updateRemoteUserUID": true,
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.makefile-tools",
+        "openai.chatgpt"
+      ],
+      "settings": {
+        "C_Cpp.default.compilerPath": "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-gcc",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+name: Prepare Stroom native container
+description: Configure Git ownership and cache the selected source-built SDK.
+inputs:
+  image:
+    description: Devcontainer image name and tag for the SDK cache key.
+    required: true
+  sdk:
+    description: Cache the release SDK for app builds and lint.
+    required: false
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - name: Configure repository ownership
+      shell: bash
+      run: |
+        set -euo pipefail
+        git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+        while IFS= read -r -d '' metadata
+        do
+          git config --global --add safe.directory "$(dirname "${metadata}")"
+        done < <(find "${GITHUB_WORKSPACE}/third_party" -name .git -prune -print0)
+    - name: Identify SDK cache
+      if: inputs.sdk == 'true'
+      id: sdk
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
+        SDK_INPUTS: ${{ hashFiles('tools/sdk/build.sh', 'patches/ps2sdk/**', 'patches/ps2sdk-ports/**', 'src/common/platform/network/diagnostic/**', 'shared/contracts/**', 'tools/contracts/**') }}
+      run: |
+        set -euo pipefail
+        sdk_revision=$(git -C third_party/ps2sdk rev-parse HEAD)
+        ports_revision=$(git -C third_party/ps2sdk-ports rev-parse HEAD)
+        digest=$(printf '%s\n' "${IMAGE}" "${SDK_INPUTS}" "${sdk_revision}" "${ports_revision}" | sha256sum | cut -d ' ' -f 1)
+        echo "key=stroom-sdk-release-${digest}" >> "${GITHUB_OUTPUT}"
+    - name: Restore or save SDK
+      if: inputs.sdk == 'true'
+      uses: actions/cache@v4
+      with:
+        path: build/sdk/release
+        key: ${{ steps.sdk.outputs.key }}

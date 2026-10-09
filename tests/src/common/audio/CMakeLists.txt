@@ -1,0 +1,5 @@
+add_subdirectory(cd)
+add_subdirectory(network)
+add_subdirectory(source)
+add_subdirectory(common)
+add_subdirectory(artwork)

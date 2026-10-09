@@ -1,0 +1,170 @@
+--- a/Makefile
++++ b/Makefile
+@@ -51,8 +51,12 @@
+ 	$(MAKE) -C $@
+ 	$(MAKE) -C $@ install
+ 
++ifeq ($(strip $(PORTS_LIBRARIES)),)
+ cmakelibs: libtiff mmceman
+-	./build-cmakelibs.sh
++endif
++
++cmakelibs:
++	PORTS_LIBRARIES="$(PORTS_LIBRARIES)" ./build-cmakelibs.sh
+ 
+ clean-cmakelibs:
+ 	rm -rf ./build
+--- a/build-cmakelibs.sh
++++ b/build-cmakelibs.sh
+@@ -4,7 +4,24 @@
+ ## Determine the maximum number of processes that Make can work with.
+ ## Also make preparations for different toolchains
+ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+-FETCH="$SCRIPT_DIR/fetch.sh"
++# An empty list retains the upstream full build. Explicit lists must include
++# dependencies and use repository directory names (for example libpng).
++function selected {
++    [ -z "${PORTS_LIBRARIES:-}" ] && return 0
++
++    case " $PORTS_LIBRARIES " in
++        *" ${1%%/*} "*) return 0 ;;
++        *) return 1 ;;
++    esac
++}
++
++function fetch_selected {
++    local name="${2##*/}"
++    selected "${name%.git}" || return 0
++    "$SCRIPT_DIR/fetch.sh" "$@"
++}
++
++FETCH=fetch_selected
+ PROC_NR=$(getconf _NPROCESSORS_ONLN)
+ CFLAGS=""
+ XTRA_OPTS=""
+@@ -22,6 +39,7 @@
+ IRX_CMAKE_OPTIONS=("-DCMAKE_TOOLCHAIN_FILE=$PS2DEV/share/ps2dev_iop.cmake" "-DCMAKE_PREFIX_PATH=$PS2SDK/ports_iop/irx" -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo "-DCMAKE_PREFIX_PATH=$PS2SDK/ports_iop/irx")
+ 
+ function build_ee {
++    selected "$1" || return 0
+     START_DIR="${PWD}"
+     DIR="$1"
+     shift
+@@ -35,6 +53,7 @@
+ }
+ 
+ function build_iop {
++    selected "$1" || return 0
+     START_DIR="${PWD}"
+     DIR="$1"
+     shift
+@@ -48,6 +67,7 @@
+ }
+ 
+ function build_irx {
++    selected "$1" || return 0
+     START_DIR="${PWD}"
+     DIR="$1"
+     shift
+@@ -134,7 +154,9 @@
+ $FETCH v1.3.18 https://github.com/lsalzman/enet.git &
+ 
+ # Use wget to download argtable2
+-wget -c --directory-prefix=build  http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz &
++if selected argtable2-13; then
++    wget -c --directory-prefix=build http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz &
++fi
+ $FETCH v3.2.2.f25c624 https://github.com/argtable/argtable3.git &
+ 
+ $FETCH v1.8.2 https://github.com/hyperrealm/libconfig.git &
+@@ -161,36 +183,48 @@
+ wait
+ 
+ # extract argtable2
+-tar -xzf build/argtable2-13.tar.gz -C build
++if selected argtable2-13; then
++    tar -xzf build/argtable2-13.tar.gz -C build
++fi
+ 
+ # NOTE: jsoncpp
+ # "snprintf" not found in "std" namespace error may occur, so patch that out here.
+-pushd build/jsoncpp
+-sed -i -e 's/std::snprintf/snprintf/' include/json/config.h
+-popd
++if selected jsoncpp; then
++    pushd build/jsoncpp
++    sed -i -e 's/std::snprintf/snprintf/' include/json/config.h
++    popd
++fi
+ 
+ # NOTE: xz
+ # flockfile and funlockfile should be made no-ops
+-pushd build/xz
+-sed -i -e 's/defined _WIN32/1/' lib/getopt.c
+-popd
++if selected xz; then
++    pushd build/xz
++    sed -i -e 's/defined _WIN32/1/' lib/getopt.c
++    popd
++fi
+ 
+ # NOTE: ARGTABLE2
+-pushd build/argtable2-13
+-sed -i -e 's/defined __GNU_LIBRARY__/1/' src/getopt.h
+-popd
++if selected argtable2-13; then
++    pushd build/argtable2-13
++    sed -i -e 's/defined __GNU_LIBRARY__/1/' src/getopt.h
++    popd
++fi
+ 
+ # NOTE: libarchive
+-pushd build/libarchive
+-# _timezone used for newlib
+-sed -i -e 's/defined(__CYGWIN__) || defined(__MINGW32__) || defined(__BORLANDC__)/1 || \0/' libarchive/archive_write_set_format_iso9660.c
+-# 32-bit integer "unsigned long int" prototype not compatible with "unsigned int"
+-sed -i -e 's/defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L/0 \&\& \0/' libarchive/xxhash.c
+-popd
+-
+-pushd build/SDL_net
+-sed -i -e 's|#include <net/if.h>||' SDLnetsys.h
+-popd
++if selected libarchive; then
++    pushd build/libarchive
++    # _timezone used for newlib
++    sed -i -e 's/defined(__CYGWIN__) || defined(__MINGW32__) || defined(__BORLANDC__)/1 || \0/' libarchive/archive_write_set_format_iso9660.c
++    # 32-bit integer "unsigned long int" prototype not compatible with "unsigned int"
++    sed -i -e 's/defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L/0 \&\& \0/' libarchive/xxhash.c
++    popd
++fi
++
++if selected SDL_net; then
++    pushd build/SDL_net
++    sed -i -e 's|#include <net/if.h>||' SDLnetsys.h
++    popd
++fi
+ 
+ ###
+ ### Change to the build folder
+@@ -209,7 +243,9 @@
+ build_ee libimagequant -DLIB_INSTALL_DIR=lib -DBUILD_WITH_SSE=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+ build_ee libpng -DPNG_SHARED=OFF -DPNG_STATIC=ON
+ # Link libpng to filename with version number, as pkg-config depends on it
+-(cd "${PS2SDK}/ports/lib" && ln -sf "libpng.a" "libpng16.a" && cd -)
++if selected libpng; then
++    (cd "${PS2SDK}/ports/lib" && ln -sf "libpng.a" "libpng16.a" && cd -)
++fi
+ build_ee freetype
+ build_ee googletest -DCMAKE_CXX_FLAGS='-D_BSD_SOURCE -DGTEST_HAS_POSIX_RE=0'
+ build_ee libyaml -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+@@ -257,7 +293,9 @@
+ # Build argtable2
+ CFLAGS="-Wno-implicit-function-declaration -D__GNU_LIBRARY__" build_ee argtable2-13 -DHAVE_STRINGS_H=ON -DHAVE_STDC_HEADERS=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+ # Copy manually the argtable2.h header
+-install -m644 argtable2-13/src/argtable2.h $PS2SDK/ports/include/
++if selected argtable2-13; then
++    install -m644 argtable2-13/src/argtable2.h $PS2SDK/ports/include/
++fi
+ 
+ build_ee argtable3 -DARGTABLE3_INSTALL_CMAKEDIR="${PS2SDK}/ports/lib/cmake/" -DARGTABLE3_REPLACE_GETOPT=OFF -DARGTABLE3_ENABLE_EXAMPLES=OFF -DARGTABLE3_ENABLE_TESTS=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+ 

@@ -1,0 +1,18 @@
+[submodule "third_party/presets-milkdrop-original"]
+	path = third_party/presets-milkdrop-original
+	url = https://github.com/projectM-visualizer/presets-milkdrop-original.git
+[submodule "third_party/MilkDrop3"]
+	path = third_party/MilkDrop3
+	url = https://github.com/milkdrop2077/MilkDrop3.git
+[submodule "third_party/Unity"]
+	path = third_party/Unity
+	url = https://github.com/ThrowTheSwitch/Unity.git
+[submodule "third_party/ps2sdk"]
+	path = third_party/ps2sdk
+	url = https://github.com/ps2dev/ps2sdk.git
+[submodule "third_party/ps2link"]
+	path = third_party/ps2link
+	url = https://github.com/ps2dev/ps2link.git
+[submodule "third_party/ps2sdk-ports"]
+	path = third_party/ps2sdk-ports
+	url = https://github.com/ps2dev/ps2sdk-ports.git

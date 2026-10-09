@@ -1,0 +1,464 @@
+{
+  "discId": "ijyLaVyos94KYRvhaUc1eCj34vI-",
+  "toc": {
+    "type": "stroom-cd-toc",
+    "version": 1,
+    "generation": 2,
+    "first": 1,
+    "leadout": 268035,
+    "offsets": [
+      150, 22607, 45375, 64970, 82285, 109135, 125820, 144275, 165322, 182747,
+      201500, 220927, 248250
+    ]
+  },
+  "selected": {
+    "releaseId": "gnudb-data-b10df383",
+    "isolatedCatalogError": false,
+    "timingOutliers": [],
+    "mediumPosition": 1,
+    "exactDisc": false,
+    "trackCountDifference": 0,
+    "missingDurations": 0,
+    "meanDifferenceMs": 61.53846153846154,
+    "maxDifferenceMs": 800,
+    "differencesMs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 800],
+    "rejection": null,
+    "tiedCandidates": 1
+  },
+  "candidates": [
+    {
+      "id": "gnudb-data-b10df383",
+      "source": "gnudb",
+      "artist": "Third Man",
+      "artists": ["Third Man"],
+      "title": "One to One",
+      "url": "https://gnudb.org",
+      "media": [
+        {
+          "position": 1,
+          "exactDisc": false,
+          "tracks": [
+            {
+              "number": "1",
+              "title": "Vinayaka",
+              "artist": "Third Man",
+              "milliseconds": 299426.6666666667
+            },
+            {
+              "number": "2",
+              "title": "Tu hi Allah ho Akbar",
+              "artist": "Third Man",
+              "milliseconds": 303573.3333333333
+            },
+            {
+              "number": "3",
+              "title": "Murali Krishna",
+              "artist": "Third Man",
+              "milliseconds": 261266.66666666666
+            },
+            {
+              "number": "4",
+              "title": "Rama Krishna Prabhu tu",
+              "artist": "Third Man",
+              "milliseconds": 230866.66666666666
+            },
+            {
+              "number": "5",
+              "title": "Sai Avatara",
+              "artist": "Third Man",
+              "milliseconds": 358000
+            },
+            {
+              "number": "6",
+              "title": "Bola Bhandari Baba",
+              "artist": "Third Man",
+              "milliseconds": 222466.66666666666
+            },
+            {
+              "number": "7",
+              "title": "Nama Bhajo",
+              "artist": "Third Man",
+              "milliseconds": 246066.66666666666
+            },
+            {
+              "number": "8",
+              "title": "Oh Bhagavan",
+              "artist": "Third Man",
+              "milliseconds": 280626.6666666667
+            },
+            {
+              "number": "9",
+              "title": "Keshava Madhava",
+              "artist": "Third Man",
+              "milliseconds": 232333.33333333334
+            },
+            {
+              "number": "10",
+              "title": "Chita Chora Yashoda ke Bal",
+              "artist": "Third Man",
+              "milliseconds": 250040
+            },
+            {
+              "number": "11",
+              "title": "Hare Nam Gate Jalo",
+              "artist": "Third Man",
+              "milliseconds": 259026.66666666666
+            },
+            {
+              "number": "12",
+              "title": "Allah Tuma Ho",
+              "artist": "Third Man",
+              "milliseconds": 364306.6666666667
+            },
+            {
+              "number": "13",
+              "title": "Guardian Blue Angel",
+              "artist": "Third Man",
+              "milliseconds": 263000
+            }
+          ]
+        }
+      ],
+      "comparison": {
+        "isolatedCatalogError": false,
+        "timingOutliers": [],
+        "mediumPosition": 1,
+        "exactDisc": false,
+        "trackCountDifference": 0,
+        "missingDurations": 0,
+        "meanDifferenceMs": 61.53846153846154,
+        "maxDifferenceMs": 800,
+        "differencesMs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 800],
+        "rejection": null
+      }
+    }
+  ],
+  "discogs": {
+    "raw": [
+      {
+        "search": {
+          "artist": "Third Man",
+          "artists": ["Third Man"],
+          "title": "One to One",
+          "source": "gnudb",
+          "id": "gnudb-data-b10df383",
+          "tracks": [
+            "Vinayaka",
+            "Tu hi Allah ho Akbar",
+            "Murali Krishna",
+            "Rama Krishna Prabhu tu",
+            "Sai Avatara",
+            "Bola Bhandari Baba",
+            "Nama Bhajo",
+            "Oh Bhagavan",
+            "Keshava Madhava",
+            "Chita Chora Yashoda ke Bal",
+            "Hare Nam Gate Jalo",
+            "Allah Tuma Ho",
+            "Guardian Blue Angel"
+          ]
+        },
+        "response": {
+          "pagination": {
+            "page": 1,
+            "pages": 1,
+            "per_page": 8,
+            "items": 2,
+            "urls": {}
+          },
+          "results": [
+            {
+              "country": "Europe",
+              "year": "1996",
+              "format": ["CD", "Album"],
+              "label": [
+                "Baba",
+                "Beethoven St. Studios",
+                "Sai Media",
+                "Sai Media",
+                "Dana Gillespie"
+              ],
+              "type": "release",
+              "genre": [
+                "Electronic",
+                "Folk, World, & Country",
+                "Stage & Screen"
+              ],
+              "style": ["New Age"],
+              "id": 16574349,
+              "barcode": [
+                "none",
+                "MASTERED BY MAYKING  BABA108",
+                "none ",
+                "none "
+              ],
+              "master_id": 1948720,
+              "master_url": "https://api.discogs.com/masters/1948720",
+              "uri": "/release/16574349-Third-Man-One-To-One-",
+              "catno": "BABA 108",
+              "title": "Third Man (3) - One To One ",
+              "thumb": "",
+              "cover_image": "",
+              "resource_url": "https://api.discogs.com/releases/16574349",
+              "community": {
+                "want": 2,
+                "have": 10
+              },
+              "format_quantity": 1,
+              "formats": [
+                {
+                  "name": "CD",
+                  "qty": "1",
+                  "descriptions": ["Album"]
+                }
+              ]
+            },
+            {
+              "country": "UK, Europe & US",
+              "year": "1996",
+              "format": ["CD", "Album"],
+              "label": ["Aquarius Music Group"],
+              "type": "release",
+              "genre": [
+                "Electronic",
+                "Folk, World, & Country",
+                "Stage & Screen"
+              ],
+              "style": ["New Age"],
+              "id": 8101608,
+              "barcode": ["6005250641212"],
+              "master_id": 1948720,
+              "master_url": "https://api.discogs.com/masters/1948720",
+              "uri": "/release/8101608-Third-Man-One-To-One-",
+              "catno": "AQUA 0641",
+              "title": "Third Man (3) - One To One ",
+              "thumb": "",
+              "cover_image": "",
+              "resource_url": "https://api.discogs.com/releases/8101608",
+              "community": {
+                "want": 5,
+                "have": 4
+              },
+              "format_quantity": 1,
+              "formats": [
+                {
+                  "name": "CD",
+                  "qty": "1",
+                  "descriptions": ["Album"]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "release": {
+          "id": 16574349,
+          "title": "One To One ",
+          "artists": [
+            {
+              "name": "Third Man (3)"
+            }
+          ],
+          "formats": [
+            {
+              "name": "CD",
+              "qty": "1",
+              "descriptions": ["Album"]
+            }
+          ],
+          "tracklist": [
+            {
+              "position": "1",
+              "type_": "track",
+              "title": "Vinayaka",
+              "duration": ""
+            },
+            {
+              "position": "2",
+              "type_": "track",
+              "title": "Tu Hi Allah Ho Akbar",
+              "duration": ""
+            },
+            {
+              "position": "3",
+              "type_": "track",
+              "title": "Murali Krishna",
+              "duration": ""
+            },
+            {
+              "position": "4",
+              "type_": "track",
+              "title": "Ramha Krishna Prabhu Tu",
+              "duration": ""
+            },
+            {
+              "position": "5",
+              "type_": "track",
+              "title": "Sai Avatara",
+              "duration": ""
+            },
+            {
+              "position": "6",
+              "type_": "track",
+              "title": "Bola Bhandari Baba",
+              "duration": ""
+            },
+            {
+              "position": "7",
+              "type_": "track",
+              "title": "Nama Bhajo",
+              "duration": ""
+            },
+            {
+              "position": "8",
+              "type_": "track",
+              "title": "Oh Bhagavan",
+              "duration": ""
+            },
+            {
+              "position": "9",
+              "type_": "track",
+              "title": "Keshava Madhava",
+              "duration": ""
+            },
+            {
+              "position": "10",
+              "type_": "track",
+              "title": "Chita Chora Yashoda Ke Bal",
+              "duration": ""
+            },
+            {
+              "position": "11",
+              "type_": "track",
+              "title": "Hare Nam Gate Jalo",
+              "duration": ""
+            },
+            {
+              "position": "12",
+              "type_": "track",
+              "title": "Allah Tuma Ho",
+              "duration": ""
+            },
+            {
+              "position": "13",
+              "type_": "track",
+              "title": "Guardian Blue Angel",
+              "duration": ""
+            }
+          ],
+          "images": [
+            {
+              "type": "primary",
+              "uri": "https://i.discogs.com/one-to-one-test.jpg"
+            }
+          ]
+        }
+      },
+      {
+        "release": {
+          "id": 8101608,
+          "title": "One To One ",
+          "artists": [
+            {
+              "name": "Third Man (3)"
+            }
+          ],
+          "formats": [
+            {
+              "name": "CD",
+              "qty": "1",
+              "descriptions": ["Album"]
+            }
+          ],
+          "tracklist": [
+            {
+              "position": "1",
+              "type_": "track",
+              "title": "Vinayaka",
+              "duration": ""
+            },
+            {
+              "position": "2",
+              "type_": "track",
+              "title": "Tu Hi Allah Ho Akbar",
+              "duration": ""
+            },
+            {
+              "position": "3",
+              "type_": "track",
+              "title": "Murali Krishna",
+              "duration": ""
+            },
+            {
+              "position": "4",
+              "type_": "track",
+              "title": "Ramha Krishna Prabhu Tu",
+              "duration": ""
+            },
+            {
+              "position": "5",
+              "type_": "track",
+              "title": "Sai Avatara",
+              "duration": ""
+            },
+            {
+              "position": "6",
+              "type_": "track",
+              "title": "Bola Bhandari Baba",
+              "duration": ""
+            },
+            {
+              "position": "7",
+              "type_": "track",
+              "title": "Nama Bhajo",
+              "duration": ""
+            },
+            {
+              "position": "8",
+              "type_": "track",
+              "title": "Oh Bhagavan",
+              "duration": ""
+            },
+            {
+              "position": "9",
+              "type_": "track",
+              "title": "Keshava Madhava",
+              "duration": ""
+            },
+            {
+              "position": "10",
+              "type_": "track",
+              "title": "Chita Chora Yashoda Ke Bal",
+              "duration": ""
+            },
+            {
+              "position": "11",
+              "type_": "track",
+              "title": "Hare Nam Gate Jalo",
+              "duration": ""
+            },
+            {
+              "position": "12",
+              "type_": "track",
+              "title": "Allah Tuma Ho",
+              "duration": ""
+            },
+            {
+              "position": "13",
+              "type_": "track",
+              "title": "Guardian Blue Angel",
+              "duration": ""
+            }
+          ],
+          "images": [
+            {
+              "type": "primary",
+              "uri": "https://i.discogs.com/one-to-one-test.jpg"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
