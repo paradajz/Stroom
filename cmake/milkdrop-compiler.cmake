@@ -1,0 +1,13 @@
+set(MILKDROP_COMPILER_INPUTS
+  "${STROOM_ROOT}/tools/milkdrop/compile_presets.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/select_quick_presets.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/benchmark_reports.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/preset_objects.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/point_invariants.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/boolean_trig.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/point_decisions.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/point_reuse.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/deferred_trig.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/generated_expression.mjs"
+  "${STROOM_ROOT}/tools/milkdrop/nested_trig.mjs"
+)

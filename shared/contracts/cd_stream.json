@@ -1,0 +1,62 @@
+{
+  "CD_STREAM_PORT": {
+    "value": 12891,
+    "description": "UDP discovery and TCP CD subscription port."
+  },
+  "CD_STREAM_DISCOVER": {
+    "value": "DISCOVER_STROOM_CD",
+    "description": "UDP query for discoverable Stroom CD sources."
+  },
+  "CD_STREAM_TRACE": {
+    "value": "STROOM_CD_TRACE",
+    "description": "Read-only UDP query for the last outgoing TCP stall snapshot."
+  },
+  "CD_STREAM_SERVICE": {
+    "value": "stroom-cd",
+    "description": "Discovery reply service identity."
+  },
+  "CD_STREAM_VERSION": {
+    "value": 1,
+    "description": "CD discovery and transport version."
+  },
+  "CD_STREAM_REQUEST": {
+    "value": "STROOM CD 1\n",
+    "description": "TCP subscription request sent before receiving records."
+  },
+  "CD_STREAM_MAGIC": {
+    "value": "SCD1",
+    "description": "Four-byte prefix of every TCP record."
+  },
+  "CD_STREAM_HEADER_BYTES": {
+    "value": 12,
+    "description": "Record header: magic, big-endian type, big-endian payload byte count."
+  },
+  "CD_STREAM_PCM": {
+    "value": 1,
+    "description": "Interleaved signed little-endian stereo PCM16 record."
+  },
+  "CD_STREAM_FORMAT": {
+    "value": 2,
+    "description": "First record: three big-endian uint32 values for rate, channels and bits."
+  },
+  "CD_STREAM_END": {
+    "value": 3,
+    "description": "Empty record marking a normal end after all preceding PCM."
+  },
+  "CD_STREAM_CHANNELS": {
+    "value": 2,
+    "description": "CD network audio channels."
+  },
+  "CD_STREAM_BITS": {
+    "value": 16,
+    "description": "CD network audio bits per sample."
+  },
+  "CD_STREAM_MAX_PAYLOAD_BYTES": {
+    "value": 2560,
+    "description": "Maximum PCM payload: one resampled CD sector at 48 kHz."
+  },
+  "CD_STREAM_FORMAT_BYTES": {
+    "value": 12,
+    "description": "Format payload size: rate, channel count and sample bits as three big-endian uint32 values."
+  }
+}

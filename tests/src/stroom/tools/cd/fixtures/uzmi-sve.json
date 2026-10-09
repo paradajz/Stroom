@@ -1,0 +1,400 @@
+{
+  "toc": {
+    "type": "stroom-cd-toc",
+    "version": 1,
+    "generation": 4,
+    "first": 1,
+    "leadout": 308508,
+    "offsets": [
+      150, 16718, 32101, 48592, 63347, 80416, 96088, 111644, 128857, 148186,
+      166500, 183625, 199441, 214859, 231215, 248886, 264471, 286250
+    ]
+  },
+  "release": {
+    "id": 2228708,
+    "title": "Uzmi Sve",
+    "artists": [
+      {
+        "name": "Ivana Brkić",
+        "anv": "",
+        "join": "",
+        "role": "",
+        "tracks": "",
+        "id": 1170673,
+        "resource_url": "https://api.discogs.com/artists/1170673",
+        "thumbnail_url": "https://i.discogs.com/ZbxhrJ7n3CEyE3p6ViEyYgDb0KlCPoZDnNJ905z8Pwo/rs:fit/g:sm/q:90/h:384/w:256/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTExNzA2/NzMtMTI3MTA4MTYz/NS5qcGVn.jpeg"
+      }
+    ],
+    "formats": [
+      {
+        "name": "CD",
+        "qty": "1",
+        "descriptions": ["Album"]
+      }
+    ],
+    "released": "2002",
+    "country": "Croatia",
+    "tracklist": [
+      {
+        "position": "1",
+        "type_": "track",
+        "title": "Samo Šuti",
+        "extraartists": [
+          {
+            "name": "Marijan Ban",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 939077,
+            "resource_url": "https://api.discogs.com/artists/939077"
+          }
+        ],
+        "duration": "3:41"
+      },
+      {
+        "position": "2",
+        "type_": "track",
+        "title": "Nije Me Sram",
+        "extraartists": [
+          {
+            "name": "Alka Vuica",
+            "anv": "",
+            "join": "",
+            "role": "Lyrics By",
+            "tracks": "",
+            "id": 709446,
+            "resource_url": "https://api.discogs.com/artists/709446"
+          },
+          {
+            "name": "Enes Tvrtković",
+            "anv": "",
+            "join": "",
+            "role": "Music By, Lyrics By",
+            "tracks": "",
+            "id": 1652892,
+            "resource_url": "https://api.discogs.com/artists/1652892"
+          }
+        ],
+        "duration": "3:25"
+      },
+      {
+        "position": "3",
+        "type_": "track",
+        "title": "SMS - Version 2003.",
+        "extraartists": [
+          {
+            "name": "Alka Vuica",
+            "anv": "",
+            "join": "",
+            "role": "Lyrics By",
+            "tracks": "",
+            "id": 709446,
+            "resource_url": "https://api.discogs.com/artists/709446"
+          },
+          {
+            "name": "Fayo",
+            "anv": "",
+            "join": "",
+            "role": "Lyrics By",
+            "tracks": "",
+            "id": 922504,
+            "resource_url": "https://api.discogs.com/artists/922504"
+          },
+          {
+            "name": "Enes Tvrtković",
+            "anv": "",
+            "join": "",
+            "role": "Music By",
+            "tracks": "",
+            "id": 1652892,
+            "resource_url": "https://api.discogs.com/artists/1652892"
+          }
+        ],
+        "duration": "3:40"
+      },
+      {
+        "position": "4",
+        "type_": "track",
+        "title": "Ljubomora",
+        "extraartists": [
+          {
+            "name": "Milana Vlaović",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 1782315,
+            "resource_url": "https://api.discogs.com/artists/1782315"
+          }
+        ],
+        "duration": "3:17"
+      },
+      {
+        "position": "5",
+        "type_": "track",
+        "title": "Uzmi Sve",
+        "extraartists": [
+          {
+            "name": "Husein Hasanefendić",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 570535,
+            "resource_url": "https://api.discogs.com/artists/570535"
+          }
+        ],
+        "duration": "3:47"
+      },
+      {
+        "position": "6",
+        "type_": "track",
+        "title": "I Ne Bih Rekla Ne",
+        "extraartists": [
+          {
+            "name": "Husein Hasanefendić",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 570535,
+            "resource_url": "https://api.discogs.com/artists/570535"
+          }
+        ],
+        "duration": "3:30"
+      },
+      {
+        "position": "7",
+        "type_": "track",
+        "title": "Da Mi Je 25",
+        "extraartists": [
+          {
+            "name": "Enes Tvrtković",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 1652892,
+            "resource_url": "https://api.discogs.com/artists/1652892"
+          }
+        ],
+        "duration": "3:27"
+      },
+      {
+        "position": "8",
+        "type_": "track",
+        "title": "Kao Pjesma",
+        "extraartists": [
+          {
+            "name": "Cacadou Look",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 570534,
+            "resource_url": "https://api.discogs.com/artists/570534"
+          }
+        ],
+        "duration": "3:50"
+      },
+      {
+        "position": "9",
+        "type_": "track",
+        "title": "Da Si Bar Ovdje Sada",
+        "extraartists": [
+          {
+            "name": "Darko Rundek",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 847883,
+            "resource_url": "https://api.discogs.com/artists/847883"
+          }
+        ],
+        "duration": "4:18"
+      },
+      {
+        "position": "10",
+        "type_": "track",
+        "title": "Pustinja - Version 2001.",
+        "extraartists": [
+          {
+            "name": "Alida Šarar",
+            "anv": "",
+            "join": "",
+            "role": "Lyrics By",
+            "tracks": "",
+            "id": 1782317,
+            "resource_url": "https://api.discogs.com/artists/1782317"
+          },
+          {
+            "name": "Davor Tolja",
+            "anv": "",
+            "join": "",
+            "role": "Music By",
+            "tracks": "",
+            "id": 278733,
+            "resource_url": "https://api.discogs.com/artists/278733"
+          }
+        ],
+        "duration": "4:04"
+      },
+      {
+        "position": "11",
+        "type_": "track",
+        "title": "Prva Pomoć",
+        "extraartists": [
+          {
+            "name": "Alida Šarar",
+            "anv": "",
+            "join": "",
+            "role": "Lyrics By",
+            "tracks": "",
+            "id": 1782317,
+            "resource_url": "https://api.discogs.com/artists/1782317"
+          },
+          {
+            "name": "Davor Tolja",
+            "anv": "",
+            "join": "",
+            "role": "Music By",
+            "tracks": "",
+            "id": 278733,
+            "resource_url": "https://api.discogs.com/artists/278733"
+          }
+        ],
+        "duration": "3:48"
+      },
+      {
+        "position": "12",
+        "type_": "track",
+        "title": "Oči Boje Kestena",
+        "extraartists": [
+          {
+            "name": "Javor Jeić",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 1161023,
+            "resource_url": "https://api.discogs.com/artists/1161023"
+          }
+        ],
+        "duration": "3:31"
+      },
+      {
+        "position": "13",
+        "type_": "track",
+        "title": "Poljupcem Ću Reći",
+        "extraartists": [
+          {
+            "name": "Marijan Ban",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 939077,
+            "resource_url": "https://api.discogs.com/artists/939077"
+          }
+        ],
+        "duration": "3:26"
+      },
+      {
+        "position": "14",
+        "type_": "track",
+        "title": "Up Where We Belong",
+        "extraartists": [
+          {
+            "name": "Enes Tvrtković",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 1652892,
+            "resource_url": "https://api.discogs.com/artists/1652892"
+          }
+        ],
+        "duration": "3:38"
+      },
+      {
+        "position": "15",
+        "type_": "track",
+        "title": "Angel Of Mine",
+        "extraartists": [
+          {
+            "name": "Enes Tvrtković",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 1652892,
+            "resource_url": "https://api.discogs.com/artists/1652892"
+          }
+        ],
+        "duration": "3:56"
+      },
+      {
+        "position": "16",
+        "type_": "track",
+        "title": "SMS - Original Version",
+        "extraartists": [
+          {
+            "name": "Enes Tvrtković",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 1652892,
+            "resource_url": "https://api.discogs.com/artists/1652892"
+          }
+        ],
+        "duration": "3:28"
+      },
+      {
+        "position": "17",
+        "type_": "track",
+        "title": "Da Si Bar Ovdje Sada - Epilog",
+        "extraartists": [
+          {
+            "name": "Dragan Lukić (2)",
+            "anv": "Dragan Lukić Luky",
+            "join": "",
+            "role": "Producer [Guest]",
+            "tracks": "",
+            "id": 638303,
+            "resource_url": "https://api.discogs.com/artists/638303"
+          },
+          {
+            "name": "Darko Rundek",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 847883,
+            "resource_url": "https://api.discogs.com/artists/847883"
+          }
+        ],
+        "duration": "4:31"
+      },
+      {
+        "position": "18",
+        "type_": "track",
+        "title": "Samo Šuti - Extended Version",
+        "extraartists": [
+          {
+            "name": "Marijan Ban",
+            "anv": "",
+            "join": "",
+            "role": "Written-By",
+            "tracks": "",
+            "id": 939077,
+            "resource_url": "https://api.discogs.com/artists/939077"
+          }
+        ],
+        "duration": "4:54"
+      }
+    ]
+  }
+}

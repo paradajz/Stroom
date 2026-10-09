@@ -1,0 +1,44 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "stroom",
+      "generator": "Unix Makefiles",
+      "toolchainFile": "${sourceDir}/../cmake/ps2-toolchain.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PS2_IP": {
+          "type": "STRING",
+          "value": "192.168.1.240"
+        },
+        "STROOM_DIAGNOSTICS": "OFF",
+        "MILKDROP_PRESET_SELECTION": "playback",
+        "STROOM_BENCHMARK_PROFILE": "OFF",
+        "STROOM_APP": "stroom"
+      }
+    },
+    {
+      "name": "stroom-diagnostics",
+      "inherits": "stroom",
+      "cacheVariables": {
+        "STROOM_DIAGNOSTICS": "ON"
+      }
+    },
+    {
+      "name": "benchmark-full",
+      "inherits": "stroom-diagnostics",
+      "cacheVariables": {
+        "MILKDROP_PRESET_SELECTION": "all-compatible",
+        "STROOM_APP": "benchmark"
+      }
+    },
+    {
+      "name": "benchmark-quick",
+      "inherits": "benchmark-full",
+      "cacheVariables": {
+        "MILKDROP_PRESET_SELECTION": "quick",
+        "STROOM_BENCHMARK_PROFILE": "ON"
+      }
+    }
+  ]
+}

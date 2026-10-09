@@ -1,0 +1,45 @@
+--- a/common/external_deps/lwip/src/api/api_msg.c
++++ b/common/external_deps/lwip/src/api/api_msg.c
+@@ -1694,6 +1694,12 @@
+           if (!len) {
+             /* set error according to partial write or not */
+             err = (conn->current_msg->msg.w.offset == 0) ? ERR_WOULDBLOCK : ERR_OK;
++            /* A previous output failure may have filled snd_buf with unsent
++               data. Retry output even when no new bytes fit, rather than
++               waiting for a TCP timer with no packet in flight to ACK. */
++            if (err == ERR_WOULDBLOCK) {
++              tcp_output(conn->pcb.tcp);
++            }
+             goto err_mem;
+           }
+         } else {
+--- a/iop/tcpip/tcpip-netman/src/ps2ip.c
++++ b/iop/tcpip/tcpip-netman/src/ps2ip.c
+@@ -344,8 +344,11 @@
+ 		{	//No need to increase reference count because pbuf_coalesce() does it.
+ 			EnQTxPacket(pbuf);
+ 			NetManNetIFXmit();
+-		} else
++		} else {
++			/* Coalescing failed: undo the reference not consumed by it. */
++			pbuf_free(pOutput);
+ 			result = ERR_MEM;
++		}
+ 	} else {
+ 		pbuf_ref(pOutput);	//This will be freed later.
+ 		EnQTxPacket(pOutput);
+--- a/iop/network/smap/src/main.c
++++ b/iop/network/smap/src/main.c
+@@ -77,8 +77,11 @@
+         if ((pbuf = pbuf_coalesce(pOutput, PBUF_RAW)) != pOutput) { // No need to increase reference count because pbuf_coalesce() does it.
+             EnQTxPacket(pbuf);
+             SMAPXmit();
+-        } else
++        } else {
++            /* Coalescing failed: undo the reference not consumed by it. */
++            pbuf_free(pOutput);
+             result = ERR_MEM;
++        }
+     } else {
+         pbuf_ref(pOutput); // This will be freed later.
+         EnQTxPacket(pOutput);

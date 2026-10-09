@@ -1,0 +1,1 @@
+int HasIopRebootedSinceLastCall(void);

@@ -1,0 +1,300 @@
+{
+  "discId": "o.mFk1jZFdsdVkGzuS8BSVcwk.s-",
+  "toc": {
+    "first": 1,
+    "leadout": 337577,
+    "offsets": [
+      150, 22794, 37917, 52907, 75252, 98692, 117947, 133935, 147977, 164167,
+      185547, 199920, 216990, 241380, 260690, 276032, 304790, 322177
+    ]
+  },
+  "match": "gnudb",
+  "selected": {
+    "releaseId": "gnudb-data-04119385",
+    "mediumPosition": 1
+  },
+  "candidates": [
+    {
+      "id": "gnudb-data-04119385",
+      "source": "gnudb",
+      "artist": "Various",
+      "artists": ["Various"],
+      "title": "Double Life (Music For Playstation)",
+      "date": "1999",
+      "media": [
+        {
+          "position": 1,
+          "exactDisc": false,
+          "tracks": [
+            {
+              "number": "1",
+              "title": "Uprocking Beats (JS16's Sound Design)",
+              "milliseconds": 301920
+            },
+            {
+              "number": "2",
+              "title": "Higher Ground",
+              "milliseconds": 201640
+            },
+            {
+              "number": "3",
+              "title": "Canned Heat",
+              "milliseconds": 199866.66666666666
+            },
+            {
+              "number": "4",
+              "title": "Soul Surfing",
+              "milliseconds": 297933.3333333333
+            },
+            {
+              "number": "5",
+              "title": "Everything Must Go (Chemical Brothers Mix)",
+              "milliseconds": 312533.3333333333
+            },
+            {
+              "number": "6",
+              "title": "Freak On A Leash",
+              "milliseconds": 256733.33333333334
+            },
+            {
+              "number": "7",
+              "title": "Stop The Rock",
+              "milliseconds": 213173.33333333334
+            },
+            {
+              "number": "8",
+              "title": "What It Is",
+              "milliseconds": 187226.66666666666
+            },
+            {
+              "number": "9",
+              "title": "Lightning Strikes",
+              "milliseconds": 215866.66666666666
+            },
+            {
+              "number": "10",
+              "title": "Higher",
+              "milliseconds": 285066.6666666667
+            },
+            {
+              "number": "11",
+              "title": "Brave New World (Remix Todd Terry)",
+              "milliseconds": 191640
+            },
+            {
+              "number": "12",
+              "title": "B-Boy 2000",
+              "milliseconds": 227600
+            },
+            {
+              "number": "13",
+              "title": "Phat Planet",
+              "milliseconds": 325200
+            },
+            {
+              "number": "14",
+              "title": "She's In Fashion",
+              "milliseconds": 257466.66666666666
+            },
+            {
+              "number": "15",
+              "title": "Rising",
+              "milliseconds": 204560
+            },
+            {
+              "number": "16",
+              "title": "Gimme All Your Lovin' 2000 (Thunderpuss 2000 Club Mix)",
+              "milliseconds": 383440
+            },
+            {
+              "number": "17",
+              "title": "King Of Snake (Straight Mate Mix)",
+              "milliseconds": 231826.66666666666
+            },
+            {
+              "number": "18",
+              "title": "Star Wars Medley / Interplanetary",
+              "milliseconds": 205306.6666666667
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "artworkRetryable": false,
+  "artworkRetryAt": 0,
+  "coverFallback": {
+    "candidates": [],
+    "raw": [
+      {
+        "search": {
+          "artist": "Various",
+          "artists": ["Various"],
+          "title": "Double Life (Music For Playstation)",
+          "source": "gnudb",
+          "id": "gnudb-data-04119385",
+          "tracks": [
+            "Uprocking Beats (JS16's Sound Design)",
+            "Higher Ground",
+            "Canned Heat",
+            "Soul Surfing",
+            "Everything Must Go (Chemical Brothers Mix)",
+            "Freak On A Leash",
+            "Stop The Rock",
+            "What It Is",
+            "Lightning Strikes",
+            "Higher",
+            "Brave New World (Remix Todd Terry)",
+            "B-Boy 2000",
+            "Phat Planet",
+            "She's In Fashion",
+            "Rising",
+            "Gimme All Your Lovin' 2000 (Thunderpuss 2000 Club Mix)",
+            "King Of Snake (Straight Mate Mix)",
+            "Star Wars Medley / Interplanetary"
+          ]
+        },
+        "response": {
+          "results": [
+            {
+              "id": 1407342
+            }
+          ]
+        }
+      },
+      {
+        "release": {
+          "id": 1407342,
+          "title": "Double Life > Music For Playstation",
+          "artists": [
+            {
+              "name": "Various"
+            }
+          ],
+          "formats": [
+            {
+              "name": "CD"
+            }
+          ],
+          "tracklist": [
+            {
+              "position": "1",
+              "type_": "track",
+              "title": "Uprocking Beats (JS 16 Sound Design)",
+              "duration": "5:01"
+            },
+            {
+              "position": "2",
+              "type_": "track",
+              "title": "Higher Ground",
+              "duration": "3:20"
+            },
+            {
+              "position": "3",
+              "type_": "track",
+              "title": "Canned Heat (Radio Edit)",
+              "duration": "3:19"
+            },
+            {
+              "position": "4",
+              "type_": "track",
+              "title": "Soul Surfing",
+              "duration": "4:55"
+            },
+            {
+              "position": "5",
+              "type_": "track",
+              "title": "Everything Must Go (Chemical Brothers Mix)",
+              "duration": "5:12"
+            },
+            {
+              "position": "6",
+              "type_": "track",
+              "title": "Freak On A Leash",
+              "duration": "4:15"
+            },
+            {
+              "position": "7",
+              "type_": "track",
+              "title": "Stop The Rock",
+              "duration": "3:32"
+            },
+            {
+              "position": "8",
+              "type_": "track",
+              "title": "What It Is (New Radio Edit)",
+              "duration": "3:06"
+            },
+            {
+              "position": "9",
+              "type_": "track",
+              "title": "Lightning Strikes",
+              "duration": "3:35"
+            },
+            {
+              "position": "10",
+              "type_": "track",
+              "title": "Higher",
+              "duration": "4:43"
+            },
+            {
+              "position": "11",
+              "type_": "track",
+              "title": "Brave New World (Remix Todd Terry)",
+              "duration": "3:10"
+            },
+            {
+              "position": "12",
+              "type_": "track",
+              "title": "B-Boy 2000",
+              "duration": "3:46"
+            },
+            {
+              "position": "13",
+              "type_": "track",
+              "title": "Phat Planet",
+              "duration": "5:24"
+            },
+            {
+              "position": "14",
+              "type_": "track",
+              "title": "She's In Fashion (Radio Edit)",
+              "duration": "4:16"
+            },
+            {
+              "position": "15",
+              "type_": "track",
+              "title": "Rising (Radio Edit)",
+              "duration": "3:23"
+            },
+            {
+              "position": "16",
+              "type_": "track",
+              "title": "Gimme All Your Lovin' 2000 (Thunderpuss 2000 Club Mix)",
+              "duration": "6:23"
+            },
+            {
+              "position": "17",
+              "type_": "track",
+              "title": "King Of Snake (Straight Mate Mix)",
+              "duration": "3:50"
+            },
+            {
+              "position": "18",
+              "type_": "track",
+              "title": "Star Wars Medley / Inertplanetary",
+              "duration": "3:25"
+            }
+          ],
+          "images": [
+            {
+              "type": "primary",
+              "uri150": "https://i.discogs.com/double-life-cover-test.jpg"
+            }
+          ]
+        }
+      }
+    ],
+    "errors": []
+  }
+}

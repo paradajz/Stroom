@@ -1,0 +1,7 @@
+add_subdirectory(iop)
+add_subdirectory(audio)
+add_subdirectory(thread)
+add_subdirectory(network)
+add_subdirectory(graphics)
+add_subdirectory(cd)
+add_subdirectory(time)

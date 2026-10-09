@@ -1,0 +1,14 @@
+--- a/iop/sound/audsrv/src/audsrv.c
++++ b/iop/sound/audsrv/src/audsrv.c
+@@ -405,9 +405,9 @@
+ 
+ int audsrv_set_threshold(int amount)
+ {
+-	if (amount > (ringbuf_size / 2))
++	if (amount > ringbuf_size)
+ 	{
+-		/* amount is greater than what we'd recommend */
++		/* A refill notification may target any free-space level in the ring. */
+ 		return AUDSRV_ERR_ARGS;
+ 	}
+ 

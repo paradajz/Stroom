@@ -1,0 +1,10 @@
+{
+  "AUDIO_RATE": {
+    "value": 48000,
+    "description": "Playback sample rate in frames per second (Hz)."
+  },
+  "AUDIO_PCM16_SCALE": {
+    "value": 32768,
+    "description": "Divisor for converting signed 16-bit PCM samples to normalized floating-point amplitudes."
+  }
+}

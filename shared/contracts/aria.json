@@ -1,0 +1,30 @@
+{
+  "ARIA_PCM_CHANNELS": {
+    "value": 2,
+    "description": "Number of interleaved audio channels in an AriaCast PCM frame."
+  },
+  "ARIA_PCM_SAMPLE_BYTES": {
+    "value": 2,
+    "description": "Bytes per channel sample in the AriaCast signed little-endian PCM format."
+  },
+  "ARIA_PCM_FRAMES": {
+    "value": 960,
+    "description": "Audio frames carried by one complete AriaCast PCM message."
+  },
+  "ARIA_DISCOVERY_PORT": {
+    "value": 12888,
+    "description": "UDP port for AriaCast discovery and private diagnostic queries."
+  },
+  "ARIA_STREAM_PORT": {
+    "value": 12889,
+    "description": "TCP port for AriaCast streaming and listening connections."
+  },
+  "ARIA_LISTEN_REQUEST": {
+    "value": "STROOM LISTEN",
+    "description": "Request text that selects silent listening mode instead of audible network playback."
+  },
+  "ARIA_LISTEN_ACK": {
+    "value": "STROOM LISTENING",
+    "description": "Acknowledgement text confirming that the receiver accepted listening mode."
+  }
+}
