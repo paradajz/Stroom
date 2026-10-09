@@ -1,0 +1,42 @@
+{
+  "constants": {
+    "METADATA_DEVICE_NAME_BYTES": {
+      "value": 64,
+      "description": "Device-name buffer capacity in bytes, including the terminating NUL."
+    },
+    "METADATA_TEXT_BYTES": {
+      "value": 128,
+      "description": "Capacity of each title, artist and album text buffer in bytes, including the terminating NUL."
+    },
+    "METADATA_ARTWORK_URL_BYTES": {
+      "value": 320,
+      "description": "Artwork URL buffer capacity in bytes, including the terminating NUL."
+    }
+  },
+  "actions": [
+    {
+      "constant": "METADATA_ACTION_INVALID",
+      "id": 0,
+      "name": "rejected",
+      "description": "Malformed JSON or unsupported field types."
+    },
+    {
+      "constant": "METADATA_ACTION_UPDATE",
+      "id": 1,
+      "name": "update",
+      "description": "Merge supplied labels, preserving absent fields."
+    },
+    {
+      "constant": "METADATA_ACTION_GET",
+      "id": 2,
+      "name": "get",
+      "description": "Read current labels without changing them."
+    },
+    {
+      "constant": "METADATA_ACTION_CLEAR",
+      "id": 3,
+      "name": "clear",
+      "description": "Clear all labels."
+    }
+  ]
+}

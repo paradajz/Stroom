@@ -1,0 +1,26 @@
+# Copy to STROOM.DAT. Read once at startup; keys and values are case-sensitive.
+# Missing or invalid settings keep their defaults. Comments begin with #.
+
+# Network configuration
+# Existing launcher addresses/DHCP are preserved. Without them, default to DHCP.
+# To use a fixed address, uncomment and set ALL three values for your network.
+# ip=YOUR_PS2_IP
+# netmask=YOUR_NETMASK
+# gateway=YOUR_GATEWAY_IP
+
+# CD recognition service IPv4 address. Empty disables recognition.
+lookup_host=
+
+# Startup preferences (defaults shown below)
+# panels/fullscreen: initial playback view.
+# The current menu/R2 choice is preserved on source/disc changes.
+# Changes layout only, not the video signal.
+display=panels
+# 30/60: FPS cap and minimum benchmark FPS for eligible measured presets.
+frame_rate=30
+# on/off: show level meters in both playback views.
+levels=on
+# on/off: mute audible playback; off enables sound. Listening stays silent.
+mute=off
+# on/off: start each newly loaded CD automatically, or wait for Start.
+cd_autoplay=on

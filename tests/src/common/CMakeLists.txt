@@ -1,0 +1,6 @@
+add_subdirectory(support)
+add_subdirectory(audio)
+add_subdirectory(milkdrop)
+add_subdirectory(platform)
+add_subdirectory(ui)
+add_subdirectory(tools)

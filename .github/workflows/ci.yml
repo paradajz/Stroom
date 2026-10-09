@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  devcontainer:
+    name: Devcontainer image
+    uses: ./.github/workflows/devcontainer-image.yml
+  app:
+    name: App
+    needs: devcontainer
+    uses: ./.github/workflows/app-build.yml
+    with:
+      image_name: ${{ needs.devcontainer.outputs.image_name }}
+      image_tag: ${{ needs.devcontainer.outputs.image_tag }}
+  tests:
+    name: Host tests
+    runs-on: ubuntu-latest
+    needs: devcontainer
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: read
+    container: &native-container
+      image: ${{ needs.devcontainer.outputs.image_name }}:${{ needs.devcontainer.outputs.image_tag }}
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ github.token }}
+      options: --user root
+    env: &native-env
+      CMAKE_BUILD_PARALLEL_LEVEL: 2
+      JOBS: 2
+    defaults: &native-defaults
+      run:
+        shell: bash
+    steps:
+      - name: Pull the repository and dependencies
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Prepare Stroom
+        uses: ./.github/actions/prepare-stroom
+        with:
+          image: ${{ needs.devcontainer.outputs.image_name }}:${{ needs.devcontainer.outputs.image_tag }}
+      - name: Run host tests
+        run: make test
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: host-tests
+          path: build/tests/Testing/Temporary/
+          if-no-files-found: ignore
+  format:
+    name: Code formatting
+    runs-on: ubuntu-latest
+    needs: devcontainer
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
+    container: *native-container
+    env: *native-env
+    defaults: *native-defaults
+    steps:
+      - name: Pull the repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Prepare Stroom
+        uses: ./.github/actions/prepare-stroom
+        with:
+          image: ${{ needs.devcontainer.outputs.image_name }}:${{ needs.devcontainer.outputs.image_tag }}
+      - name: Check formatting
+        run: |
+          make format
+          git diff --exit-code
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: devcontainer
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      packages: read
+    container: *native-container
+    env: *native-env
+    defaults: *native-defaults
+    steps:
+      - name: Pull the repository and dependencies
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Prepare Stroom
+        uses: ./.github/actions/prepare-stroom
+        with:
+          image: ${{ needs.devcontainer.outputs.image_name }}:${{ needs.devcontainer.outputs.image_tag }}
+          sdk: "true"
+      - name: Run clang-tidy
+        run: make lint-release

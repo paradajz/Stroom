@@ -1,0 +1,78 @@
+{
+  "CD_SECTOR_BYTES": {
+    "value": 2352,
+    "description": "Number of PCM bytes in a raw audio CD sector."
+  },
+  "CD_LOOKUP_PORT": {
+    "value": 12890,
+    "description": "Service port: UDP for CD recognition requests and replies, TCP for hosted artwork."
+  },
+  "CD_LOOKUP_PACKET_BYTES": {
+    "value": 1024,
+    "description": "Maximum encoded CD recognition request size in bytes."
+  },
+  "CD_LOOKUP_TYPE": {
+    "value": "stroom-cd-toc",
+    "description": "JSON type identifier for a CD table-of-contents request."
+  },
+  "CD_LOOKUP_VERSION": {
+    "value": 1,
+    "description": "Version of the CD table-of-contents request format."
+  },
+  "CD_LOOKUP_REPLY_MAGIC": {
+    "value": "CDM1",
+    "description": "ASCII prefix identifying a CD metadata reply with an artwork state byte after the correlation token."
+  },
+  "CD_LOOKUP_TOKEN_BYTES": {
+    "value": 4,
+    "description": "Size of the reply correlation token in bytes; encoded as a big-endian unsigned 32-bit integer."
+  },
+  "CD_SECTORS_PER_SECOND": {
+    "value": 75,
+    "description": "Number of audio CD sectors per second, used to convert offsets to durations."
+  },
+  "CD_LEAD_IN_SECTORS": {
+    "value": 150,
+    "description": "Offset added to LBA positions to obtain absolute CD sector positions."
+  },
+  "CD_MAX_TRACKS": {
+    "value": 99,
+    "description": "Maximum number of tracks supported in an audio CD table of contents."
+  },
+  "CD_LOOKUP_ARTWORK_STATE_BYTES": {
+    "value": 1,
+    "description": "Size of the artwork state following the reply token; the shared metadata JSON follows this byte."
+  },
+  "CD_LOOKUP_ARTWORK_PENDING": {
+    "value": 0,
+    "description": "Artwork search or retry is pending. Continue metadata probes."
+  },
+  "CD_LOOKUP_ARTWORK_AVAILABLE": {
+    "value": 1,
+    "description": "The metadata contains a hosted artwork URL. Finish downloading before stopping probes."
+  },
+  "CD_LOOKUP_ARTWORK_UNAVAILABLE": {
+    "value": 2,
+    "description": "No artwork will be supplied for this lookup, including when artwork is disabled. Keep the placeholder and stop probes."
+  },
+  "CD_LOOKUP_BUSY_MAGIC": {
+    "value": "CDB1",
+    "description": "Busy reply prefix; followed by the request token and a big-endian retry delay in milliseconds."
+  },
+  "CD_LOOKUP_BUSY_REPLY_BYTES": {
+    "value": 12,
+    "description": "Busy reply size: four-byte magic, four-byte request token, four-byte retry delay."
+  },
+  "CD_LOOKUP_BUSY_RETRY_OFFSET": {
+    "value": 8,
+    "description": "Offset of the big-endian retry delay in a busy reply."
+  },
+  "CD_LOOKUP_BUSY_MIN_RETRY_MS": {
+    "value": 5000,
+    "description": "Minimum accepted delay before retrying a busy lookup service."
+  },
+  "CD_LOOKUP_BUSY_MAX_RETRY_MS": {
+    "value": 60000,
+    "description": "Maximum accepted delay before retrying a busy lookup service."
+  }
+}

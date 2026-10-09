@@ -1,0 +1,4 @@
+InheritParentConfig: true
+# Keep independent numeric fixtures and intentional byte-for-byte state checks.
+# SDK/Unity test doubles and interception macros retain external API spellings.
+Checks: "-readability-magic-numbers,-bugprone-suspicious-memory-comparison,-readability-identifier-naming"

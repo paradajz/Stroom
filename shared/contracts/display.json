@@ -1,0 +1,14 @@
+{
+  "DISPLAY_MODE_NAME": {
+    "value": "480p",
+    "description": "Selected physical output profile, recorded in benchmark reports."
+  },
+  "DISPLAY_REFRESH_NUMERATOR": {
+    "value": 60000,
+    "description": "Numerator of the selected display refresh rate in Hz; shared by presentation timing and benchmark eligibility."
+  },
+  "DISPLAY_REFRESH_DENOMINATOR": {
+    "value": 1001,
+    "description": "Denominator of the selected display refresh rate in Hz; nominal 30 FPS presents every second refresh."
+  }
+}

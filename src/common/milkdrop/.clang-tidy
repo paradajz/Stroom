@@ -1,0 +1,3 @@
+InheritParentConfig: true
+# Equation coefficients and rendering coordinates are kept with their formulas.
+Checks: "-readability-magic-numbers"

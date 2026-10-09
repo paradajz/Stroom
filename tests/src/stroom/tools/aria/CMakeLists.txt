@@ -1,0 +1,5 @@
+add_test(NAME aria-sender COMMAND "${NODE_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/test_sender.mjs")
+set_tests_properties(aria-sender PROPERTIES RUN_SERIAL TRUE)
+add_test(NAME aria-listening COMMAND "${NODE_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/test_listening.mjs")
+add_test(NAME aria-service-log COMMAND "${NODE_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/test_service_log.mjs")
+add_test(NAME aria-service-install COMMAND "${NODE_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/test_service_install.mjs")

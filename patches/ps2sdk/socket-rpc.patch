@@ -1,0 +1,365 @@
+--- a/ee/rpc/tcpips/src/ps2ipc.c
++++ b/ee/rpc/tcpips/src/ps2ipc.c
+@@ -21,8 +21,16 @@
+ 
+ #include <ps2ips.h>
+ #include <ps2ip_rpc.h>
++#include "platform/iop/services.h"
++#include "platform/network/rpc/bridge.h"
++#include "util/diagnostics.h"
++#include "platform/network/rpc/driver_stats.h"
++#include "platform/network/diagnostic/wire.h"
++#include <ps2sdkapi.h>
+ 
+-static int lock_sema;
++static int lock_sema = -1;
++static int socket_initialized;
++static int socket_closing;
+ static SifRpcClientData_t _ps2ip;
+ static struct {
+ 	union {
+@@ -49,7 +57,7 @@
+ 		u8 buffer[512];
+ 	};
+ } _rpc_buffer __attribute__((aligned(64)));
+-static int _intr_data[32] __attribute__((aligned(64)));
++static unsigned char _intr_data[sizeof(rests_pkt)] __attribute__((aligned(64)));
+ 
+ static ip_addr_t dns_servers[DNS_MAX_SERVERS];
+ 
+@@ -64,20 +72,26 @@
+ int ps2ip_init(void)
+ {
+ 	ee_sema_t sema;
+-	if (HasIopRebootedSinceLastCall())
+-		ps2ip_deinit();
++	int result;
+ 
+-	if (_ps2ip.server)
++	if (HasIopRebootedSinceLastCall()) {
++		result = platform_socket_bridge_close();
++		if (result < 0)
++			return result;
++	}
++	if (socket_closing)
++		return -EBUSY;
++	if (socket_initialized)
+ 		return 0;
+ 
+-	while(1)
+-	{
+-		if(sceSifBindRpc(&_ps2ip, PS2IP_IRX, 0) < 0)
+-			return -1;
+-
+-		if(_ps2ip.server != NULL)
++	while (1) {
++		result = sceSifBindRpc(&_ps2ip, PS2_RPC_SOCKET, 0);
++		if (result < 0) {
++			memset(&_ps2ip, 0, sizeof(_ps2ip));
++			return result;
++		}
++		if (_ps2ip.server != NULL)
+ 			break;
+-
+ 		nopdelay();
+ 	}
+ 
+@@ -85,24 +99,47 @@
+ 	sema.max_count = 1;
+ 	sema.option = (u32)"ps2ipc";
+ 	sema.attr = 0;
+-	lock_sema = CreateSema(&sema);
+-
++	result = CreateSema(&sema);
++	if (result < 0) {
++		STROOM_LOG("stroom: socket CreateSema failed (%d)\n", result);
++		memset(&_ps2ip, 0, sizeof(_ps2ip));
++		return result;
++	}
++	lock_sema = result;
+ 	_ps2sdk_ps2ipc_init();
++	socket_initialized = 1;
+ 
+ 	return 0;
+ }
+ 
+-void ps2ip_deinit(void)
++int platform_socket_bridge_close(void)
+ {
+-	_ps2sdk_ps2ipc_deinit();
++	int result;
+ 
+-	if (lock_sema > 0)
+-		DeleteSema(lock_sema);
+-	lock_sema = 0;
+-
++	socket_closing = 1;
++	if (socket_initialized) {
++		_ps2sdk_ps2ipc_deinit();
++		socket_initialized = 0;
++	}
+ 	memset(&_ps2ip, 0, sizeof(_ps2ip));
++	if (lock_sema >= 0) {
++		result = DeleteSema(lock_sema);
++		if (result < 0) {
++			STROOM_LOG("stroom: socket DeleteSema id=%d failed (%d)\n", lock_sema, result);
++			return result;
++		}
++		lock_sema = -1;
++	}
++	socket_closing = 0;
++
++	return 0;
+ }
+ 
++void ps2ip_deinit(void)
++{
++	(void)platform_socket_bridge_close();
++}
++
+ int ps2ipc_accept(int s, struct sockaddr *addr, int *addrlen)
+ {
+ 	int result;
+@@ -239,12 +276,25 @@
+ 	int i;
+ 
+ 	if(rests->ssize)
++	{
+ 		for(i = 0; i < rests->ssize; i++)
++		{
+ 			rests->sbuf[i] = rests->sbuffer[i];
++		}
++	}
+ 
+ 	if(rests->esize)
++	{
+ 		for(i = 0; i < rests->esize; i++)
++		{
+ 			rests->ebuf[i] = rests->ebuffer[i];
++		}
++	}
++
++	/* Empty/error reads skip the IOP DMA but still invoke this callback.
++	 * Consume fragments once so those completions cannot reuse old pointers. */
++	rests->ssize = 0;
++	rests->esize = 0;
+ }
+ 
+ 
+@@ -782,4 +832,80 @@
+ 
+ 	return dns;
+ }
++#endif
++
++int platform_socket_bridge_compatible(void)
++{
++    if (!_ps2ip.server)
++    {
++        return 0;
++    }
++
++    Ps2SocketBridgeInfo info = { 0 };
++    WaitSema(lock_sema);
++    /* Send zeros as well as clearing the reply: legacy handlers return their
++     * shared IOP buffer unchanged for unknown commands. */
++    memset(_rpc_buffer.buffer, 0, sizeof(info));
++    int result = sceSifCallRpc(&_ps2ip, PS2_SOCKET_RPC_INFO, 0,
++                              _rpc_buffer.buffer, sizeof(info),
++                              _rpc_buffer.buffer, sizeof(info), NULL, NULL);
++    if (result >= 0)
++    {
++        memcpy(&info, _rpc_buffer.buffer, sizeof(info));
++    }
++    SignalSema(lock_sema);
++
++    unsigned required = STROOM_DIAGNOSTICS ? PS2_SOCKET_CAP_DIAGNOSTICS : 0;
++    return result >= 0 && info.magic == PS2_SOCKET_BRIDGE_MAGIC &&
++           info.abi == PS2_SOCKET_BRIDGE_ABI &&
++           (info.capabilities & required) == required;
++}
++
++#if STROOM_DIAGNOSTICS
++void platform_net_driver_stats(Ps2NetDriverStats* stats)
++{
++    memset(stats, 0, sizeof(*stats));
++    stats->status = -2;
++    if (!_ps2ip.server)
++    {
++        return;
++    }
++    WaitSema(lock_sema);
++    memset(_rpc_buffer.buffer, 0, sizeof(Ps2NetDriverStats));
++    if (sceSifCallRpc(&_ps2ip, PS2_SOCKET_RPC_DRIVER_STATS, 0, NULL, 0,
++                      _rpc_buffer.buffer, sizeof(Ps2NetDriverStats), NULL, NULL) >= 0)
++    {
++        memcpy(stats, _rpc_buffer.buffer, sizeof(*stats));
++    }
++    SignalSema(lock_sema);
++}
++
++void platform_net_diagnostic(const Ps2DiagnosticRequest* request, Ps2DiagnosticReply* reply)
++{
++    memset(reply, 0, sizeof(*reply));
++    reply->status = -2;
++    if (!_ps2ip.server)
++    {
++        return;
++    }
++    Ps2DiagnosticRequest translated = *request;
++    if (request->command == DIAGNOSTIC_IOP_SELECT && request->socket >= 0)
++    {
++        translated.socket = ps2sdk_get_iop_fd(request->socket);
++        if (translated.socket < 0)
++        {
++            reply->status = -3;
++            return;
++        }
++    }
++    WaitSema(lock_sema);
++    memcpy(_rpc_buffer.buffer, &translated, sizeof(translated));
++    if (sceSifCallRpc(&_ps2ip, DIAGNOSTIC_IOP_RPC, 0, _rpc_buffer.buffer, sizeof(*request),
++                      _rpc_buffer.buffer, sizeof(*reply), NULL, NULL) >= 0)
++    {
++        memcpy(reply, _rpc_buffer.buffer, sizeof(*reply));
++    }
++    SignalSema(lock_sema);
++}
++
+ #endif
+--- a/iop/tcpip/tcpips/src/ps2ips.c
++++ b/iop/tcpip/tcpips/src/ps2ips.c
+@@ -33,11 +33,16 @@
+ #include <intrman.h>
+ #include <ps2ip.h>
+ #include <ps2ip_rpc.h>
++#include "platform/iop/services.h"
++#include "platform/network/rpc/bridge.h"
++#include "util/diagnostics.h"
++#include "platform/network/rpc/driver_stats.h"
++#include "platform/network/diagnostic/wire.h"
+ 
+-#define MODNAME	"TCP/IP_Stack_RPC"
++#define MODNAME	"STROOM_TCPIP_RPC"
+ IRX_ID(MODNAME, 1, 1);
+ 
+-#define BUFF_SIZE	(1024)
++#define BUFF_SIZE	(4096)
+ 
+ #define MIN(a, b)	(((a)<(b))?(a):(b))
+ #define RDOWN_64(a)	(((a) >> 6) << 6)
+@@ -46,7 +51,7 @@
+ static SifRpcServerData_t ps2ips_server;
+ static u8 _rpc_buffer[512 * 4] __attribute__((__aligned__(4)));
+ 
+-static char lwip_buffer[BUFF_SIZE + 32];
++static char lwip_buffer[BUFF_SIZE + 64];
+ static rests_pkt rests;
+ 
+ static void do_accept( void * rpcBuffer, int size )
+@@ -54,7 +59,7 @@
+ 	int *ptr = rpcBuffer;
+ 	cmd_pkt *pkt = (cmd_pkt *)ptr;
+ 	struct sockaddr addr;
+-	int addrlen, ret;
++	int addrlen = sizeof(addr), ret;
+ 
+ 	(void)size;
+ 
+@@ -123,7 +128,8 @@
+ 	int rlen, recvlen;
+ 	int dma_id = 0;
+ 	int intr_stat;
+-	s_recv_pkt *recv_pkt = (s_recv_pkt *)rpcBuffer;
++	s_recv_pkt request = *(s_recv_pkt *)rpcBuffer;
++	s_recv_pkt *recv_pkt = &request;
+ 	r_recv_pkt *ret_pkt = (r_recv_pkt *)rpcBuffer;
+ 	struct t_SifDmaTransfer sifdma;
+ 
+@@ -145,8 +151,16 @@
+ 	recvlen = MIN(BUFF_SIZE, recv_pkt->length);
+ 
+ 	// Do actual TCP recv
++
++#if STROOM_DIAGNOSTICS
++	platform_net_diagnostic_read(recv_pkt->socket, 0, 0);
++#endif
+ 	rlen = recv(recv_pkt->socket, lwip_buffer + s_offset, recvlen, recv_pkt->flags);
+ 
++#if STROOM_DIAGNOSTICS
++	platform_net_diagnostic_read(recv_pkt->socket, rlen, 1);
++#endif
++
+ 	if(rlen <= 0) goto recv_end;
+ 	if(rlen <= 64) srest = rlen;
+ 
+@@ -217,11 +231,12 @@
+ 	int rlen, recvlen;
+ 	int dma_id = 0;
+ 	int intr_stat;
+-	s_recv_pkt *recv_pkt = (s_recv_pkt *)rpcBuffer;
++	s_recv_pkt request = *(s_recv_pkt *)rpcBuffer;
++	s_recv_pkt *recv_pkt = &request;
+ 	r_recv_pkt *ret_pkt = (r_recv_pkt *)rpcBuffer;
+ 	static struct t_SifDmaTransfer sifdma;
+ 	static struct sockaddr sockaddr;
+-	int fromlen;
++	int fromlen = sizeof(sockaddr);
+ 
+ 	(void)size;
+ 
+@@ -557,6 +572,25 @@
+ {
+ 	switch(command)
+ 	{
++    case PS2_SOCKET_RPC_INFO:
++    {
++        Ps2SocketBridgeInfo *info = (Ps2SocketBridgeInfo *)rpcBuffer;
++        info->magic = PS2_SOCKET_BRIDGE_MAGIC;
++        info->abi = PS2_SOCKET_BRIDGE_ABI;
++        info->capabilities = STROOM_DIAGNOSTICS ? PS2_SOCKET_CAP_DIAGNOSTICS : 0;
++        break;
++    }
++#if STROOM_DIAGNOSTICS
++	case DIAGNOSTIC_IOP_RPC:
++    {
++        Ps2DiagnosticRequest request = *(Ps2DiagnosticRequest *)rpcBuffer;
++        platform_net_diagnostic(&request, (Ps2DiagnosticReply *)rpcBuffer);
++        break;
++    }
++	case PS2_SOCKET_RPC_DRIVER_STATS:
++        platform_net_driver_stats((Ps2NetDriverStats *)rpcBuffer);
++        break;
++#endif
+ 	case PS2IPS_ID_ACCEPT:
+ 		do_accept(rpcBuffer, size);
+ 		break;
+@@ -637,7 +671,7 @@
+ 	printf("PS2IPS: RPC Thread Started\n");
+ 
+ 	sceSifSetRpcQueue( &ps2ips_queue , GetThreadId() );
+-	sceSifRegisterRpc( &ps2ips_server, PS2IP_IRX, (void *)rpcHandlerFunction,(u8 *)&_rpc_buffer,NULL,NULL, &ps2ips_queue );
++	sceSifRegisterRpc( &ps2ips_server, PS2_RPC_SOCKET, (void *)rpcHandlerFunction,(u8 *)&_rpc_buffer,NULL,NULL, &ps2ips_queue );
+ 	sceSifRpcLoop( &ps2ips_queue );
+ }
+ 
+--- a/iop/tcpip/tcpips/src/imports.lst
++++ b/iop/tcpip/tcpips/src/imports.lst
+@@ -57,3 +57,7 @@
+ I_dns_getserver
+ #endif
+ ps2ip_IMPORTS_end
++
++loadcore_IMPORTS_start
++I_QueryLibraryEntryTable
++loadcore_IMPORTS_end
+--- a/iop/tcpip/tcpips/src/irx_imports.h
++++ b/iop/tcpip/tcpips/src/irx_imports.h
+@@ -17,6 +17,7 @@
+ 
+ /* Please keep these in alphabetical order!  */
+ #include "intrman.h"
++#include "loadcore.h"
+ #include "ps2ip.h"
+ #include "sifcmd.h"
+ #include "sifman.h"
