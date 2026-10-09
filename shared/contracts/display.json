@@ -1,0 +1,35 @@
+{
+  "constants": {
+    "DISPLAY_MODE_NAME": {
+      "value": "480i",
+      "description": "Selected physical output profile, recorded in benchmark reports."
+    },
+    "DISPLAY_INTERLACED": {
+      "value": 1,
+      "description": "Select NTSC interlaced output when one; otherwise use 480p progressive output."
+    },
+    "DISPLAY_WIDTH": {
+      "value": 640,
+      "description": "Framebuffer width in pixels, shared by the application and launcher."
+    },
+    "DISPLAY_HEIGHT": {
+      "value": 480,
+      "description": "Full framebuffer height in pixels, including both fields for interlaced output."
+    },
+    "DISPLAY_REFRESH_NUMERATOR": {
+      "value": 60000,
+      "description": "Numerator of the refresh rate in Hz: complete progressive scans or interlaced fields per second."
+    },
+    "DISPLAY_REFRESH_DENOMINATOR": {
+      "value": 1001,
+      "description": "Denominator of the refresh rate in Hz; nominal 30 FPS presents every second refresh."
+    }
+  },
+  "profiles": {
+    "480i": {},
+    "480p": {
+      "DISPLAY_MODE_NAME": "480p",
+      "DISPLAY_INTERLACED": 0
+    }
+  }
+}

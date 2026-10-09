@@ -1,0 +1,796 @@
+{
+  "constants": {
+    "DIAGNOSTIC_CAPTURE_VERSION": {
+      "value": 1,
+      "description": "Version reported in diagnostic recorder replies."
+    },
+    "DIAGNOSTIC_CAPTURE_DATA_WORDS": {
+      "value": 6,
+      "description": "Number of unsigned 32-bit payload words after a record's timestamp and event ID."
+    },
+    "DIAGNOSTIC_CAPTURE_RECORDS": {
+      "value": 8192,
+      "description": "Maximum record count in the rolling history and in each saved capture."
+    },
+    "DIAGNOSTIC_CAPTURE_PAGE_RECORDS": {
+      "value": 8,
+      "description": "Maximum number of diagnostic records returned in one paginated reply."
+    },
+    "DIAGNOSTIC_CAPTURE_QUERY": {
+      "value": "STROOM_DIAGNOSTIC",
+      "description": "Query text for the capture manifest; append capture ID and record offset to request a page."
+    },
+    "DIAGNOSTIC_CAPTURE_CLEAR_QUERY": {
+      "value": "STROOM_DIAGNOSTIC_CLEAR",
+      "description": "Query text that clears saved capture slots."
+    },
+    "DIAGNOSTIC_QUERY": {
+      "value": "STROOM_STATS",
+      "description": "Query text requesting audio receiver statistics."
+    },
+    "DIAGNOSTIC_DRIVER_QUERY": {
+      "value": "STROOM_DRIVER",
+      "description": "Query text requesting network-driver diagnostics."
+    },
+    "DIAGNOSTIC_METADATA_QUERY": {
+      "value": "STROOM_METADATA",
+      "description": "Query text requesting the current metadata snapshot."
+    },
+    "DIAGNOSTIC_ARTWORK_QUERY": {
+      "value": "STROOM_ARTWORK",
+      "description": "Query text requesting artwork transport diagnostics."
+    }
+  },
+  "events": [
+    {
+      "id": 1,
+      "constant": "DIAGNOSTIC_CAPTURE_SAMPLE",
+      "name": "queues",
+      "fields": [
+        {
+          "name": "pcmMs",
+          "description": "Queued PCM duration in milliseconds."
+        },
+        {
+          "name": "pcmMessages",
+          "description": "Number of PCM messages received."
+        },
+        {
+          "name": "readAttempts",
+          "description": "Number of socket read attempts."
+        },
+        {
+          "name": "socketBytes",
+          "description": "Cumulative audio bytes read from the socket."
+        },
+        {
+          "name": "partialMessageBytes",
+          "description": "Bytes held for an incomplete PCM message."
+        },
+        {
+          "name": "pausedReads",
+          "description": "Number of reads deferred while the PCM queue was full."
+        }
+      ],
+      "description": "Audio input queue snapshot."
+    },
+    {
+      "id": 2,
+      "constant": "DIAGNOSTIC_CAPTURE_READ",
+      "name": "eeRead",
+      "fields": [
+        {
+          "name": "result",
+          "description": "Read return value, with signed errors stored as a 32-bit word."
+        },
+        {
+          "name": "errno",
+          "description": "Socket errno captured after the read."
+        },
+        {
+          "name": "durationMs",
+          "description": "Read duration in milliseconds."
+        },
+        {
+          "name": "requestedBytes",
+          "description": "Number of bytes requested."
+        },
+        {
+          "name": "socketBytes",
+          "description": "Cumulative audio bytes including this read."
+        },
+        {
+          "name": "session",
+          "description": "Stream generation identifying the session."
+        }
+      ],
+      "description": "EE audio socket read."
+    },
+    {
+      "id": 3,
+      "constant": "DIAGNOSTIC_CAPTURE_OUTPUT",
+      "name": "output",
+      "fields": [
+        {
+          "name": "pcm",
+          "description": "Nonzero when PCM was ready, zero for silence."
+        },
+        {
+          "name": "result",
+          "description": "Output operation result stored as a 32-bit word."
+        },
+        {
+          "name": "queuedBytes",
+          "description": "Queued audio bytes reported by the sound output."
+        },
+        {
+          "name": "lockMs",
+          "description": "Time spent acquiring the output lock, in milliseconds."
+        },
+        {
+          "name": "durationMs",
+          "description": "Total output operation duration in milliseconds."
+        },
+        {
+          "name": "pcmBytesSubmitted",
+          "description": "Cumulative PCM bytes submitted."
+        }
+      ],
+      "description": "Audio output submission."
+    },
+    {
+      "id": 4,
+      "constant": "DIAGNOSTIC_CAPTURE_SOUND_RPC",
+      "name": "soundRpc",
+      "fields": [
+        {
+          "name": "queuedMs",
+          "description": "Queue-status RPC duration in milliseconds."
+        },
+        {
+          "name": "availableMs",
+          "description": "Available-space RPC duration in milliseconds."
+        },
+        {
+          "name": "submitMs",
+          "description": "Audio-submit RPC duration in milliseconds."
+        },
+        {
+          "name": "bytes",
+          "description": "Number of bytes submitted."
+        },
+        {
+          "name": "pcmMessagesQueued",
+          "description": "PCM messages remaining in the input queue."
+        },
+        {
+          "name": "silenceWrites",
+          "description": "Cumulative silence writes."
+        }
+      ],
+      "description": "Timing of sound RPC operations."
+    },
+    {
+      "id": 5,
+      "constant": "DIAGNOSTIC_CAPTURE_CLOCK",
+      "name": "clock",
+      "fields": [
+        {
+          "name": "eeBegin",
+          "description": "EE timestamp before the query, in milliseconds."
+        },
+        {
+          "name": "eeEnd",
+          "description": "EE timestamp after the query, in milliseconds."
+        },
+        {
+          "name": "iopNow",
+          "description": "IOP timestamp returned by the query, in milliseconds."
+        },
+        {
+          "name": "iopLost",
+          "description": "Number of IOP diagnostic records lost."
+        },
+        {
+          "name": "status",
+          "description": "IOP diagnostic query status stored as a 32-bit word."
+        },
+        {
+          "name": "abi",
+          "description": "IOP diagnostic ABI identifier."
+        }
+      ],
+      "description": "EE/IOP clock correlation sample."
+    },
+    {
+      "id": 6,
+      "constant": "DIAGNOSTIC_CAPTURE_CONNECTION",
+      "name": "connection",
+      "fields": [
+        {
+          "name": "peerIPv4",
+          "description": "Peer IPv4 address as a host-order 32-bit word."
+        },
+        {
+          "name": "peerPort",
+          "description": "Peer TCP port."
+        },
+        {
+          "name": "socket",
+          "description": "Selected EE socket descriptor."
+        },
+        {
+          "name": "session",
+          "description": "Stream generation identifying the session."
+        },
+        {
+          "name": "socketBytes",
+          "description": "Cumulative audio socket bytes."
+        },
+        {
+          "name": "pcmMessages",
+          "description": "Number of PCM messages received."
+        }
+      ],
+      "description": "Selected audio connection."
+    },
+    {
+      "id": 7,
+      "constant": "DIAGNOSTIC_CAPTURE_STAGE",
+      "name": "stage",
+      "fields": [
+        {
+          "name": "stage",
+          "description": "Worker stage identifier."
+        },
+        {
+          "name": "durationMs",
+          "description": "Stage duration in milliseconds."
+        },
+        {
+          "name": "pollGapMs",
+          "description": "Stage-specific poll gap or acquisition delay in milliseconds."
+        },
+        {
+          "name": "unused1",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused2",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused3",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "Timing of an audio worker stage."
+    },
+    {
+      "id": 8,
+      "constant": "DIAGNOSTIC_CAPTURE_ARTWORK",
+      "name": "artwork",
+      "fields": [
+        {
+          "name": "socketOpen",
+          "description": "Nonzero while the artwork socket is open."
+        },
+        {
+          "name": "downloadedBytes",
+          "description": "Number of bytes accumulated by the HTTP receiver."
+        },
+        {
+          "name": "complete",
+          "description": "Artwork completion state."
+        },
+        {
+          "name": "attempt",
+          "description": "Number of download attempts."
+        },
+        {
+          "name": "error",
+          "description": "Artwork transport error stored as a 32-bit word."
+        },
+        {
+          "name": "metadataAt",
+          "description": "Timestamp of the associated metadata update, in milliseconds."
+        }
+      ],
+      "description": "Artwork transport progress."
+    },
+    {
+      "id": 9,
+      "constant": "DIAGNOSTIC_CAPTURE_COVER",
+      "name": "cover",
+      "fields": [
+        {
+          "name": "phase",
+          "description": "Artwork processing phase identifier."
+        },
+        {
+          "name": "durationMs",
+          "description": "Phase duration in milliseconds."
+        },
+        {
+          "name": "metadataRevision",
+          "description": "Metadata revision associated with the artwork."
+        },
+        {
+          "name": "value0",
+          "description": "First phase-specific observation value."
+        },
+        {
+          "name": "value1",
+          "description": "Second phase-specific observation value."
+        },
+        {
+          "name": "value2",
+          "description": "Third phase-specific observation value."
+        }
+      ],
+      "description": "Artwork decoding and upload observation."
+    },
+    {
+      "id": 100,
+      "constant": "DIAGNOSTIC_IOP_RX",
+      "name": "tcpRx",
+      "fields": [
+        {
+          "name": "sequence",
+          "description": "TCP sequence number."
+        },
+        {
+          "name": "ack",
+          "description": "TCP acknowledgement number."
+        },
+        {
+          "name": "payloadBytes",
+          "description": "TCP payload length in bytes."
+        },
+        {
+          "name": "peerWindow",
+          "description": "Receive window advertised by the peer."
+        },
+        {
+          "name": "nextExpected",
+          "description": "Next sequence number expected by the local receiver."
+        },
+        {
+          "name": "flags",
+          "description": "TCP header flags."
+        }
+      ],
+      "description": "Incoming TCP segment for the audio connection."
+    },
+    {
+      "id": 101,
+      "constant": "DIAGNOSTIC_IOP_TX",
+      "name": "tcpTx",
+      "fields": [
+        {
+          "name": "sequence",
+          "description": "TCP sequence number."
+        },
+        {
+          "name": "ack",
+          "description": "TCP acknowledgement number."
+        },
+        {
+          "name": "advertisedWindow",
+          "description": "Receive window advertised in the outgoing header."
+        },
+        {
+          "name": "internalWindow",
+          "description": "Local TCP receive window."
+        },
+        {
+          "name": "flags",
+          "description": "TCP header flags."
+        },
+        {
+          "name": "result",
+          "description": "IP submission result stored as a 32-bit word; not proof of delivery."
+        }
+      ],
+      "description": "Outgoing TCP segment for the audio connection."
+    },
+    {
+      "id": 102,
+      "constant": "DIAGNOSTIC_IOP_DELIVER",
+      "name": "socketDelivery",
+      "fields": [
+        {
+          "name": "bytes",
+          "description": "Payload length in bytes."
+        },
+        {
+          "name": "result",
+          "description": "Delivery result stored as a 32-bit word."
+        },
+        {
+          "name": "deliveredBytes",
+          "description": "Cumulative bytes successfully delivered."
+        },
+        {
+          "name": "nextExpected",
+          "description": "Next sequence number expected by the local receiver."
+        },
+        {
+          "name": "internalWindow",
+          "description": "Local TCP receive window."
+        },
+        {
+          "name": "unused",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "TCP payload delivery to the socket."
+    },
+    {
+      "id": 103,
+      "constant": "DIAGNOSTIC_IOP_READ",
+      "name": "iopRead",
+      "fields": [
+        {
+          "name": "result",
+          "description": "Read return value stored as a 32-bit word."
+        },
+        {
+          "name": "readBytes",
+          "description": "Cumulative bytes successfully read."
+        },
+        {
+          "name": "unused1",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused2",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused3",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused4",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "IOP socket read completion."
+    },
+    {
+      "id": 104,
+      "constant": "DIAGNOSTIC_IOP_INPUT_ERROR",
+      "name": "inputFailure",
+      "fields": [
+        {
+          "name": "error",
+          "description": "Input error code stored as a 32-bit word."
+        },
+        {
+          "name": "unused1",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused2",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused3",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused4",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused5",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "Network input failure."
+    },
+    {
+      "id": 105,
+      "constant": "DIAGNOSTIC_IOP_POOL_ERROR",
+      "name": "poolFailure",
+      "fields": [
+        {
+          "name": "pool",
+          "description": "Pool identifier."
+        },
+        {
+          "name": "unused1",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused2",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused3",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused4",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused5",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "Network memory-pool allocation failure."
+    },
+    {
+      "id": 106,
+      "constant": "DIAGNOSTIC_IOP_BEGIN",
+      "name": "iopReadBegin",
+      "fields": [
+        {
+          "name": "unused",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "readBytes",
+          "description": "Cumulative bytes read before this call."
+        },
+        {
+          "name": "unused1",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused2",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused3",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused4",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "Beginning of an IOP socket read."
+    },
+    {
+      "id": 107,
+      "constant": "DIAGNOSTIC_IOP_HEAP_ERROR",
+      "name": "heapFailure",
+      "fields": [
+        {
+          "name": "requestedBytes",
+          "description": "Requested allocation size in bytes."
+        },
+        {
+          "name": "unused1",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused2",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused3",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused4",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused5",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "Network heap allocation failure."
+    },
+    {
+      "id": 108,
+      "constant": "DIAGNOSTIC_IOP_SACK_STATE",
+      "name": "sackState",
+      "fields": [
+        {
+          "name": "enabled",
+          "description": "Nonzero when SACK support is compiled into lwIP."
+        },
+        {
+          "name": "negotiated",
+          "description": "Nonzero when SACK was negotiated with this peer."
+        },
+        {
+          "name": "unused2",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused3",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused4",
+          "description": "Reserved payload word; currently unused."
+        },
+        {
+          "name": "unused5",
+          "description": "Reserved payload word; currently unused."
+        }
+      ],
+      "description": "Selective acknowledgement availability."
+    },
+    {
+      "id": 109,
+      "constant": "DIAGNOSTIC_IOP_SACK_BLOCK",
+      "name": "sackBlock",
+      "fields": [
+        {
+          "name": "txId",
+          "description": "Serial number identifying the outgoing segment."
+        },
+        {
+          "name": "ack",
+          "description": "TCP acknowledgement number."
+        },
+        {
+          "name": "index",
+          "description": "Zero-based block index in the option."
+        },
+        {
+          "name": "left",
+          "description": "Left edge of the acknowledged sequence range."
+        },
+        {
+          "name": "right",
+          "description": "Right edge of the acknowledged sequence range."
+        },
+        {
+          "name": "result",
+          "description": "IP submission result stored as a 32-bit word."
+        }
+      ],
+      "description": "A SACK block from an outgoing TCP header."
+    },
+    {
+      "id": 110,
+      "constant": "DIAGNOSTIC_IOP_SACK_PACKET",
+      "name": "sackPacket",
+      "fields": [
+        {
+          "name": "txId",
+          "description": "Serial number identifying the outgoing segment."
+        },
+        {
+          "name": "ack",
+          "description": "TCP acknowledgement number."
+        },
+        {
+          "name": "blockCount",
+          "description": "Number of SACK blocks, or zero for invalid options."
+        },
+        {
+          "name": "valid",
+          "description": "Nonzero when the inspected options were valid."
+        },
+        {
+          "name": "headerBytes",
+          "description": "TCP header length in bytes."
+        },
+        {
+          "name": "result",
+          "description": "IP submission result stored as a 32-bit word."
+        }
+      ],
+      "description": "Summary of outgoing TCP SACK options."
+    }
+  ],
+  "artworkPhases": [
+    {
+      "id": 1,
+      "constant": "DIAGNOSTIC_ARTWORK_DECODE_BEGIN",
+      "name": "decode-begin",
+      "description": "Decoder starts processing compressed artwork."
+    },
+    {
+      "id": 2,
+      "constant": "DIAGNOSTIC_ARTWORK_DECODE_END",
+      "name": "decode-end",
+      "description": "Decoder finishes image conversion."
+    },
+    {
+      "id": 3,
+      "constant": "DIAGNOSTIC_ARTWORK_UPLOAD_BEGIN",
+      "name": "upload-begin",
+      "description": "Texture upload begins."
+    },
+    {
+      "id": 4,
+      "constant": "DIAGNOSTIC_ARTWORK_UPLOAD_END",
+      "name": "upload-end",
+      "description": "Texture upload completes."
+    },
+    {
+      "id": 5,
+      "constant": "DIAGNOSTIC_ARTWORK_DECODE_RELEASE",
+      "name": "decode-release",
+      "description": "Compressed input is released after decoding."
+    },
+    {
+      "id": 6,
+      "constant": "DIAGNOSTIC_ARTWORK_FRAME",
+      "name": "frame",
+      "description": "Frame presentation timing while processing artwork."
+    },
+    {
+      "id": 7,
+      "constant": "DIAGNOSTIC_ARTWORK_SOCKET",
+      "name": "socket",
+      "description": "Artwork socket creation."
+    },
+    {
+      "id": 8,
+      "constant": "DIAGNOSTIC_ARTWORK_NONBLOCKING",
+      "name": "nonblocking",
+      "description": "Socket nonblocking configuration."
+    },
+    {
+      "id": 9,
+      "constant": "DIAGNOSTIC_ARTWORK_CONNECT",
+      "name": "connect",
+      "description": "Connection attempt to the artwork host."
+    },
+    {
+      "id": 10,
+      "constant": "DIAGNOSTIC_ARTWORK_SEND",
+      "name": "send",
+      "description": "HTTP request bytes sent."
+    },
+    {
+      "id": 11,
+      "constant": "DIAGNOSTIC_ARTWORK_RECEIVE",
+      "name": "receive",
+      "description": "HTTP response bytes received."
+    },
+    {
+      "id": 12,
+      "constant": "DIAGNOSTIC_ARTWORK_GROW",
+      "name": "grow",
+      "description": "Download buffer growth."
+    },
+    {
+      "id": 13,
+      "constant": "DIAGNOSTIC_ARTWORK_PARSE",
+      "name": "parse",
+      "description": "HTTP response parsing."
+    },
+    {
+      "id": 14,
+      "constant": "DIAGNOSTIC_ARTWORK_CLOSE",
+      "name": "close",
+      "description": "Artwork socket closure."
+    },
+    {
+      "id": 15,
+      "constant": "DIAGNOSTIC_ARTWORK_WORKER_RELEASE",
+      "name": "worker-release",
+      "description": "Download worker buffer release."
+    },
+    {
+      "id": 16,
+      "constant": "DIAGNOSTIC_ARTWORK_VRAM",
+      "name": "vram",
+      "description": "Artwork texture VRAM allocation."
+    },
+    {
+      "id": 17,
+      "constant": "DIAGNOSTIC_ARTWORK_OBSERVATIONS_LOST",
+      "name": "observations-lost",
+      "description": "Observations dropped because the diagnostic queue was full."
+    },
+    {
+      "id": 18,
+      "constant": "DIAGNOSTIC_ARTWORK_SOCKET_ERROR",
+      "name": "socket-error",
+      "description": "Socket error retrieval."
+    }
+  ]
+}

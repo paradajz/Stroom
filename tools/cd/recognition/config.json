@@ -1,0 +1,7 @@
+{
+  "contact": "",
+  "cache_directory": null,
+  "cache_max_size": "1 GB",
+  "cover_speed": "10 MiB/s",
+  "log_statistics": false
+}

@@ -1,0 +1,12 @@
+--- a/common/external_deps/lwip/src/api/sockets.c
++++ b/common/external_deps/lwip/src/api/sockets.c
+@@ -63,6 +63,9 @@
+ #endif
+ 
+ #include <string.h>
++#ifdef _IOP
++#include "stroom_tcp_state_hooks.h"
++#endif
+ 
+ #ifdef LWIP_HOOK_FILENAME
+ #include LWIP_HOOK_FILENAME

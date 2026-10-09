@@ -1,0 +1,62 @@
+{
+  "CD_SECTOR_BYTES": {
+    "value": 2352,
+    "description": "Number of PCM bytes in a raw audio CD sector."
+  },
+  "CD_LOOKUP_PORT": {
+    "value": 12890,
+    "description": "TCP port for the HTTP v2 CD recognition API and hosted artwork."
+  },
+  "CD_LOOKUP_PACKET_BYTES": {
+    "value": 1024,
+    "description": "Maximum encoded CD recognition request size in bytes."
+  },
+  "CD_LOOKUP_TYPE": {
+    "value": "stroom-cd-toc",
+    "description": "JSON type identifier for a CD table-of-contents request."
+  },
+  "CD_LOOKUP_VERSION": {
+    "value": 2,
+    "description": "Version selected by the HTTP API path and returned in response envelopes."
+  },
+  "CD_SECTORS_PER_SECOND": {
+    "value": 75,
+    "description": "Number of audio CD sectors per second, used to convert offsets to durations."
+  },
+  "CD_LEAD_IN_SECTORS": {
+    "value": 150,
+    "description": "Offset added to LBA positions to obtain absolute CD sector positions."
+  },
+  "CD_MAX_TRACKS": {
+    "value": 99,
+    "description": "Maximum number of tracks supported in an audio CD table of contents."
+  },
+  "CD_LOOKUP_ARTWORK_PENDING": {
+    "value": 0,
+    "description": "Artwork preparation or an artwork-only retry is pending; poll the lookup result."
+  },
+  "CD_LOOKUP_ARTWORK_AVAILABLE": {
+    "value": 1,
+    "description": "Artwork is available at a hosted cover path."
+  },
+  "CD_LOOKUP_ARTWORK_UNAVAILABLE": {
+    "value": 2,
+    "description": "No artwork will be supplied for this lookup; retain labels and the placeholder."
+  },
+  "CD_LOOKUP_RESPONSE_BYTES": {
+    "value": 65536,
+    "description": "Maximum HTTP API JSON response body size in bytes."
+  },
+  "CD_LOOKUP_COVER_BYTES": {
+    "value": 524288,
+    "description": "Maximum compressed CD cover JPEG size in bytes; other artwork retains its own limit."
+  },
+  "CD_LOOKUP_COVER_SIDE": {
+    "value": 600,
+    "description": "Maximum width or height of a prepared CD cover, preserving aspect ratio without enlargement."
+  },
+  "CD_LOOKUP_MAX_RETRY_SECONDS": {
+    "value": 604800,
+    "description": "Maximum retry delay and advertised no-match cache lifetime in HTTP v2, in seconds (seven days)."
+  }
+}

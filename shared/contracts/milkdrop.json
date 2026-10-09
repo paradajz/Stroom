@@ -1,0 +1,34 @@
+{
+  "MILKDROP_TRIG_FAST_LIMIT": {
+    "value": 1048576,
+    "description": "Maximum absolute angle in radians accepted by the fast sine/cosine path; larger values use the libm fallback."
+  },
+  "MILKDROP_FPS_BASELINE": {
+    "value": 30,
+    "description": "Nominal baseline playback frame-rate option and default; benchmark eligibility adjusts this rate to the display refresh profile."
+  },
+  "MILKDROP_FPS_HIGH": {
+    "value": 60,
+    "description": "Nominal playback frame-rate option for every display refresh; benchmark eligibility adjusts this rate to the display refresh profile."
+  },
+  "MILKDROP_COLOR_CURVE_BRIGHTEN": {
+    "value": 1,
+    "description": "Brighten bit in the rendered colour-curve mode and benchmark validation mode."
+  },
+  "MILKDROP_COLOR_CURVE_DARKEN": {
+    "value": 2,
+    "description": "Darken bit in the rendered colour-curve mode and benchmark validation mode."
+  },
+  "MILKDROP_COLOR_CURVE_SOLARIZE": {
+    "value": 4,
+    "description": "Solarize bit in the rendered colour-curve mode and benchmark validation mode."
+  },
+  "MILKDROP_COLOR_CURVE_MASK": {
+    "value": 7,
+    "description": "All colour-curve effect bits. Nonzero combinations form the contiguous validation mode IDs 1 through this mask; zero means no effect."
+  },
+  "MILKDROP_BENCHMARK_FPS_DECIMALS": {
+    "value": 2,
+    "description": "Decimal places saved for steady benchmark FPS; eligibility thresholds use the same rounding precision."
+  }
+}

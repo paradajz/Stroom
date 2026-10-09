@@ -1,0 +1,207 @@
+#include "platform/network/rpc/driver_stats.h"
+#include "unity.h"
+#include <loadcore.h>
+#include <netman.h>
+#include <string.h>
+
+static void* entries[8];
+static int   present;
+static int   query_result;
+static int   link_ready;
+
+/**
+ * @brief Simulate the read-only Ethernet status query.
+ * @param command Requested operation.
+ * @param args Unused input.
+ * @param args_size Input byte count.
+ * @param output Destination.
+ * @param output_size Destination size.
+ * @return Configured driver result.
+ */
+static int query(unsigned int command, void* args, unsigned int args_size, void* output, unsigned int output_size)
+{
+    if (command == NETMAN_NETIF_IOCTL_GET_LINK_STATUS)
+    {
+        TEST_ASSERT_NULL(args);
+        TEST_ASSERT_EQUAL_UINT(0, args_size);
+        TEST_ASSERT_NULL(output);
+        TEST_ASSERT_EQUAL_UINT(0, output_size);
+        return query_result < 0 ? query_result : link_ready;
+    }
+
+    TEST_ASSERT_EQUAL_UINT(NETMAN_NETIF_IOCTL_ETH_GET_STATUS, command);
+    TEST_ASSERT_NULL(args);
+    TEST_ASSERT_EQUAL_UINT(0, args_size);
+    TEST_ASSERT_EQUAL_UINT(sizeof(struct NetManEthStatus), output_size);
+
+    struct NetManEthStatus* status = output;
+
+    status->LinkStatus                     = 1;
+    status->LinkMode                       = NETMAN_NETIF_ETH_LINK_MODE_100M_FDX;
+    status->stats.RxAllocFail              = 65535;
+    status->stats.RxFrameOverrunCount      = 2;
+    status->stats.RxFrameBadLengthCount    = 3;
+    status->stats.RxFrameBadFCSCount       = 4;
+    status->stats.RxFrameBadAlignmentCount = 5;
+    status->stats.RxDroppedFrameCount      = 123456;
+    status->stats.RxErrorCount             = 654321;
+    status->stats.TxDroppedFrameCount      = 4000000000u;
+    status->stats.TxErrorCount             = 3000000000u;
+    status->stats.TxFrameLOSSCRCount       = 7;
+    status->stats.TxFrameEDEFERCount       = 8;
+    status->stats.TxFrameCollisionCount    = 9;
+    status->stats.TxFrameUnderrunCount     = 65535;
+
+    return query_result;
+}
+
+/**
+ * @brief Resolve a compatible optional NETMAN library.
+ * @param library Requested library.
+ * @return Simulated export table, or NULL.
+ */
+void* QueryLibraryEntryTable(iop_library_t* library)
+{
+    TEST_ASSERT_EQUAL_STRING("netman", library->name);
+    TEST_ASSERT_EQUAL_HEX16(0x0300, library->version);
+
+    return present ? entries : NULL;
+}
+
+/**
+ * @brief Restore a complete optional module.
+ */
+void setUp(void)
+{
+    present      = 1;
+    query_result = 0;
+    link_ready   = NETMAN_NETIF_ETH_LINK_STATE_UP;
+
+    for (unsigned i = 0; i < 8; ++i)
+    {
+        entries[i] = (void*)query;
+    }
+}
+
+/**
+ * @brief No fixture resources require cleanup.
+ */
+void tearDown(void)
+{}
+
+/**
+ * @brief Preserve driver values without misreporting unavailable or failed queries as success.
+ */
+#if STROOM_DIAGNOSTICS
+/**
+ * @brief Verify counters.
+ */
+static void counters(void)
+{
+    Ps2NetDriverStats stats;
+
+    platform_net_driver_stats(&stats);
+    TEST_ASSERT_EQUAL_INT(1, stats.status);
+    TEST_ASSERT_EQUAL_UINT(1, stats.link_up);
+    TEST_ASSERT_EQUAL_UINT(4, stats.link_mode);
+    TEST_ASSERT_EQUAL_UINT(65535, stats.rx_alloc_fail);
+    TEST_ASSERT_EQUAL_UINT(2, stats.rx_overrun);
+    TEST_ASSERT_EQUAL_UINT(3, stats.rx_bad_length);
+    TEST_ASSERT_EQUAL_UINT(4, stats.rx_bad_fcs);
+    TEST_ASSERT_EQUAL_UINT(5, stats.rx_bad_alignment);
+    TEST_ASSERT_EQUAL_UINT(123456, stats.rx_dropped);
+    TEST_ASSERT_EQUAL_UINT(654321, stats.rx_errors);
+
+    present = 0;
+
+    platform_net_driver_stats(&stats);
+    TEST_ASSERT_EQUAL_INT(0, stats.status);
+    TEST_ASSERT_EQUAL_UINT(0, stats.rx_alloc_fail);
+
+    present    = 1;
+    entries[6] = NULL;
+
+    platform_net_driver_stats(&stats);
+    TEST_ASSERT_EQUAL_INT(0, stats.status);
+
+    entries[6]   = (void*)query;
+    query_result = -1;
+
+    platform_net_driver_stats(&stats);
+    TEST_ASSERT_EQUAL_INT(-1, stats.status);
+    TEST_ASSERT_EQUAL_UINT(0, stats.rx_alloc_fail);
+}
+#endif
+
+/**
+ * @brief Verify transmit counters.
+ */
+static void transmit_counters(void)
+{
+    Ps2NetTxStats stats;
+
+    platform_net_tx_stats(&stats);
+    TEST_ASSERT_EQUAL_HEX32(PS2_NET_TX_STATS_ABI, stats.abi);
+    TEST_ASSERT_EQUAL_INT(1, stats.status);
+    TEST_ASSERT_EQUAL_UINT(4, stats.link_mode);
+    TEST_ASSERT_EQUAL_UINT(4000000000u, stats.tx_dropped);
+    TEST_ASSERT_EQUAL_UINT(3000000000u, stats.tx_errors);
+    TEST_ASSERT_EQUAL_UINT(7, stats.tx_carrier);
+    TEST_ASSERT_EQUAL_UINT(8, stats.tx_deferred);
+    TEST_ASSERT_EQUAL_UINT(9, stats.tx_collisions);
+    TEST_ASSERT_EQUAL_UINT(65535, stats.tx_underruns);
+    TEST_ASSERT_EQUAL_UINT(65535, stats.rx_alloc_fail);
+    TEST_ASSERT_EQUAL_UINT(2, stats.rx_overrun);
+    TEST_ASSERT_EQUAL_UINT(4, stats.rx_bad_fcs);
+
+    present = 0;
+
+    platform_net_tx_stats(&stats);
+    TEST_ASSERT_EQUAL_INT(0, stats.status);
+    TEST_ASSERT_EQUAL_UINT(0, stats.tx_dropped);
+
+    present      = 1;
+    query_result = -1;
+
+    platform_net_tx_stats(&stats);
+    TEST_ASSERT_EQUAL_INT(-1, stats.status);
+    TEST_ASSERT_EQUAL_UINT(0, stats.tx_underruns);
+}
+
+/**
+ * @brief Verify carrier queries distinguish link-down and missing NETMAN support.
+ */
+static void link_readiness(void)
+{
+    TEST_ASSERT_TRUE(platform_net_link_ready());
+
+    link_ready = NETMAN_NETIF_ETH_LINK_STATE_DOWN;
+
+    TEST_ASSERT_FALSE(platform_net_link_ready());
+
+    link_ready   = NETMAN_NETIF_ETH_LINK_STATE_UP;
+    query_result = -1;
+
+    TEST_ASSERT_FALSE(platform_net_link_ready());
+
+    query_result = 0;
+    present      = 0;
+
+    TEST_ASSERT_FALSE(platform_net_link_ready());
+}
+
+/**
+ * @brief Run this host-test suite and return its failure count.
+ * @return Process exit status.
+ */
+int main(void)
+{
+    UNITY_BEGIN();
+    RUN_TEST(link_readiness);
+    RUN_TEST(transmit_counters);
+#if STROOM_DIAGNOSTICS
+    RUN_TEST(counters);
+#endif
+
+    return UNITY_END();
+}

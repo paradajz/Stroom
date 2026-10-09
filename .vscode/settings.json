@@ -1,0 +1,18 @@
+{
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "C_Cpp.autocomplete": "disabled",
+  "C_Cpp.autoAddFileAssociations": false,
+  "C_Cpp.configurationWarnings": "disabled",
+  "C_Cpp.errorSquiggles": "disabled",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.inlayHints.enabled": "off",
+  "editor.mouseWheelZoom": true,
+  "editor.renderWhitespace": "all",
+  "explorer.compactFolders": false,
+  "extensions.ignoreRecommendations": true,
+  "git.detectSubmodules": false,
+  "git.mergeEditor": false,
+  "makefile.configureOnOpen": false
+}

@@ -1,0 +1,46 @@
+{
+  "discId": "I0gQyio9AJbjyPtkvZggh4oS.xo-",
+  "toc": {
+    "type": "stroom-cd-toc",
+    "first": 1,
+    "leadout": 285171,
+    "offsets": [
+      150, 22265, 43537, 63887, 91962, 113587, 133632, 156045, 177590, 198265,
+      223102, 243325, 264630
+    ]
+  },
+  "tracks": [
+    "Senorita",
+    "Like I love you",
+    "(Oh no) What you got",
+    "Take it from here",
+    "Cry me a river",
+    "Rock your body",
+    "Nothin' else",
+    "Last night",
+    "Still on my brain",
+    "(And she said) Take me now",
+    "Right for me",
+    "Let's take a ride",
+    "Never again"
+  ],
+  "entries": [
+    {
+      "id": "b50ed887",
+      "credit": "Justin Timberlake / Justified",
+      "seconds": 3802
+    },
+    {
+      "id": "b50ed885",
+      "credit": "Justified / Justified",
+      "seconds": 3802,
+      "numberedTitles": true
+    },
+    {
+      "id": "b50ed983",
+      "credit": "Justin Timberlake / Justified",
+      "seconds": 3803,
+      "firstTrack": "Señorita"
+    }
+  ]
+}

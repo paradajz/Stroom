@@ -1,0 +1,13 @@
+--- a/iop/tcpip/tcpip-base/include/lwipopts.h
++++ b/iop/tcpip/tcpip-base/include/lwipopts.h
+@@ -236,6 +236,10 @@
+  * names (read, write & close). (only used if you use sockets.c)
+  */
+ #define LWIP_POSIX_SOCKETS_IO_NAMES	0
++
++/* Restart listeners while accepted connections finish closing, including
++ * outgoing CD streaming after disc ejection and replacement. */
++#define SO_REUSE 1
+ 
+ /*
+    ----------------------------------

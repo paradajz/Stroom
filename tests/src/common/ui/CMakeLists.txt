@@ -1,0 +1,6 @@
+add_subdirectory(cd_player)
+add_subdirectory(visualizer)
+add_subdirectory(shared)
+add_subdirectory(artwork)
+add_subdirectory(frame)
+add_subdirectory(settings)

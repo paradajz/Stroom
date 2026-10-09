@@ -1,0 +1,76 @@
+--- a/iop/tcpip/tcpip/src/exports.tab
++++ b/iop/tcpip/tcpip/src/exports.tab
+@@ -69,0 +70 @@
++	DECLARE_EXPORT(platform_net_diagnostic_service)	//58: versioned stroom diagnostic query
+--- a/iop/tcpip/tcpip/src/ps2ip.c
++++ b/iop/tcpip/tcpip/src/ps2ip.c
+@@ -0,0 +1 @@
++#include "stroom_diagnostic_hooks.h"
+@@ -220,0 +222,2 @@
++	{
++		platform_net_diagnostic_failure(DIAGNOSTIC_IOP_INPUT_ERROR, result);
+@@ -221,0 +225 @@
++	}
+--- a/iop/tcpip/tcpip-netman/src/exports.tab
++++ b/iop/tcpip/tcpip-netman/src/exports.tab
+@@ -69,0 +70 @@
++	DECLARE_EXPORT(platform_net_diagnostic_service)	//58: versioned stroom diagnostic query
+--- a/iop/tcpip/tcpip-netman/src/ps2ip.c
++++ b/iop/tcpip/tcpip-netman/src/ps2ip.c
+@@ -0,0 +1 @@
++#include "stroom_diagnostic_hooks.h"
+@@ -223,0 +225,2 @@
++	{
++		platform_net_diagnostic_failure(DIAGNOSTIC_IOP_INPUT_ERROR, result);
+@@ -224,0 +228 @@
++	}
+--- a/iop/tcpip/tcpip/Makefile
++++ b/iop/tcpip/tcpip/Makefile
+@@ -92 +92 @@
+-IOP_OBJS = exports.o ps2ip.o sys_arch.o imports.o $(ps2ip_OBJECTS)
++IOP_OBJS = stroom_diagnostic.o exports.o ps2ip.o sys_arch.o imports.o $(ps2ip_OBJECTS)
+@@ -213,0 +214,3 @@
++
++$(IOP_OBJS_DIR)stroom_diagnostic.o: $(PS2IP_BASE)/stroom_diagnostic.c
++	$(IOP_CC) $(IOP_CFLAGS) -c $< -o $@
+--- a/common/external_deps/lwip/src/core/tcp_in.c
++++ b/common/external_deps/lwip/src/core/tcp_in.c
+@@ -0,0 +1 @@
++#include "stroom_diagnostic_hooks.h"
+@@ -401,0 +403 @@
++    platform_net_diagnostic_rx(pcb, seqno, ackno, p->tot_len, tcphdr->wnd, flags);
+--- a/common/external_deps/lwip/src/core/tcp_out.c
++++ b/common/external_deps/lwip/src/core/tcp_out.c
+@@ -0,0 +1 @@
++#include "stroom_diagnostic_hooks.h"
+@@ -1610,0 +1612 @@
++  const u16_t diagnostic_header_bytes = seg->p->len;
+@@ -1612,0 +1615 @@
++  platform_net_diagnostic_tx(pcb, seg->tcphdr, diagnostic_header_bytes, err);
+@@ -1971,0 +1975,2 @@
++  const struct tcp_hdr *diagnostic_header = (const struct tcp_hdr *)p->payload;
++  const u16_t diagnostic_header_bytes = p->len;
+@@ -1972,0 +1978 @@
++  platform_net_diagnostic_tx(pcb, diagnostic_header, diagnostic_header_bytes, err);
+--- a/common/external_deps/lwip/src/api/api_msg.c
++++ b/common/external_deps/lwip/src/api/api_msg.c
+@@ -0,0 +1 @@
++#include "stroom_diagnostic_hooks.h"
+@@ -334,0 +336 @@
++    platform_net_diagnostic_delivery(pcb, len, ERR_MEM);
+@@ -341,0 +344 @@
++    platform_net_diagnostic_delivery(pcb, len, ERR_OK);
+--- a/common/external_deps/lwip/src/core/memp.c
++++ b/common/external_deps/lwip/src/core/memp.c
+@@ -0,0 +1 @@
++#include "stroom_diagnostic_hooks.h"
+@@ -354,0 +356,3 @@
++  if (memp == NULL) {
++    platform_net_diagnostic_failure(DIAGNOSTIC_IOP_POOL_ERROR, type);
++  }
+--- a/common/external_deps/lwip/src/core/mem.c
++++ b/common/external_deps/lwip/src/core/mem.c
+@@ -0,0 +1 @@
++#include "stroom_diagnostic_hooks.h"
+@@ -957,0 +959 @@
++  platform_net_diagnostic_failure(DIAGNOSTIC_IOP_HEAP_ERROR, (int)size);

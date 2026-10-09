@@ -1,0 +1,70 @@
+{
+  "constants": {},
+  "profileFields": [
+    {
+      "name": "audio_analysis",
+      "group": "update",
+      "description": "Audio analysis before preset evaluation."
+    },
+    {
+      "name": "preset_equations",
+      "group": "update",
+      "description": "Preset frame and mesh equations."
+    },
+    {
+      "name": "wave_frame_equations",
+      "group": "wave",
+      "description": "Custom-wave per-frame equations."
+    },
+    {
+      "name": "wave_samples",
+      "group": "wave",
+      "description": "Custom-wave sample conditioning."
+    },
+    {
+      "name": "wave_point_inputs",
+      "group": "wave",
+      "description": "Custom-wave point input preparation."
+    },
+    {
+      "name": "wave_point_equations",
+      "group": "wave",
+      "description": "Custom-wave per-point equations."
+    },
+    {
+      "name": "wave_vertex_store",
+      "group": "wave",
+      "description": "Custom-wave output vertex storage."
+    },
+    {
+      "name": "custom_wave_update",
+      "group": "update",
+      "description": "Complete custom-wave update, including the wave subgroup."
+    },
+    {
+      "name": "custom_shape_update",
+      "group": "update",
+      "description": "Custom-shape equations and state update."
+    },
+    {
+      "name": "wave_geometry",
+      "group": "render",
+      "description": "Wave geometry excluding drawing-command construction."
+    },
+    {
+      "name": "shape_geometry",
+      "group": "render",
+      "description": "Shape geometry excluding drawing-command construction."
+    },
+    {
+      "name": "draw_commands",
+      "group": "render",
+      "description": "Wave and shape drawing-command construction."
+    },
+    {
+      "name": "presentation",
+      "group": "render",
+      "description": "Visualization presentation effects, excluding display refresh waiting."
+    }
+  ]
+}

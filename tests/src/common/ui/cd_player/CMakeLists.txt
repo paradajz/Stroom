@@ -1,0 +1,1 @@
+stroom_test(player_controller ui test_player_controller.c)

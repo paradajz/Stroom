@@ -1,0 +1,208 @@
+{
+  "id": 29505,
+  "title": "Techno Club Vol.9",
+  "artists": [
+    {
+      "name": "Talla 2XLC",
+      "join": "Welcomes"
+    },
+    {
+      "name": "Yves Deruyter",
+      "join": ""
+    }
+  ],
+  "formats": [
+    {
+      "name": "CD",
+      "qty": "2"
+    }
+  ],
+  "images": [
+    {
+      "type": "primary",
+      "uri150": "https://i.discogs.com/techno-club-fixture.jpg"
+    }
+  ],
+  "tracklist": [
+    {
+      "type_": "track",
+      "position": "1-01",
+      "title": "Traumwelten",
+      "duration": "6:15"
+    },
+    {
+      "type_": "track",
+      "position": "1-02",
+      "title": "The Rain",
+      "duration": "7:23"
+    },
+    {
+      "type_": "track",
+      "position": "1-03",
+      "title": "Into My Brain (Plug 'N' Play Club Mix)",
+      "duration": "5:58"
+    },
+    {
+      "type_": "track",
+      "position": "1-04",
+      "title": "Genuine Draft",
+      "duration": "4:38"
+    },
+    {
+      "type_": "track",
+      "position": "1-05",
+      "title": "Grave Diggers Have More Fun",
+      "duration": "4:45"
+    },
+    {
+      "type_": "track",
+      "position": "1-06",
+      "title": "Sturm & Drang",
+      "duration": "4:50"
+    },
+    {
+      "type_": "track",
+      "position": "1-07",
+      "title": "Full Moon",
+      "duration": "6:38"
+    },
+    {
+      "type_": "track",
+      "position": "1-08",
+      "title": "Technotrain",
+      "duration": "6:00"
+    },
+    {
+      "type_": "track",
+      "position": "1-09",
+      "title": "Relieve My Pain",
+      "duration": "4:16"
+    },
+    {
+      "type_": "track",
+      "position": "1-10",
+      "title": "Hear You Calling (Dark Moon Remix)",
+      "duration": "5:33"
+    },
+    {
+      "type_": "track",
+      "position": "1-11",
+      "title": "Children Of Paradise (DJ Shah Mix)",
+      "duration": "6:50"
+    },
+    {
+      "type_": "track",
+      "position": "1-12",
+      "title": "Answer Mother Earth (Void Vision Mix)",
+      "duration": "2:20"
+    },
+    {
+      "type_": "track",
+      "position": "1-13",
+      "title": "!Keep It That Way! (DJ Pulsedriver Remix)",
+      "duration": "4:50"
+    },
+    {
+      "type_": "track",
+      "position": "1-14",
+      "title": "Pornostar (Club Mix)",
+      "duration": "2:14"
+    },
+    {
+      "type_": "track",
+      "position": "2-01",
+      "title": "Factor Y",
+      "duration": "6:08"
+    },
+    {
+      "type_": "track",
+      "position": "2-02",
+      "title": "Iowa",
+      "duration": "5:17"
+    },
+    {
+      "type_": "track",
+      "position": "2-03",
+      "title": "Orion",
+      "duration": "4:55"
+    },
+    {
+      "type_": "track",
+      "position": "2-04",
+      "title": "Coitus (Remix)",
+      "duration": "2:35"
+    },
+    {
+      "type_": "track",
+      "position": "2-05",
+      "title": "Pumped Up",
+      "duration": "4:42"
+    },
+    {
+      "type_": "track",
+      "position": "2-06",
+      "title": "Alone In The Dark",
+      "duration": "3:04"
+    },
+    {
+      "type_": "track",
+      "position": "2-07",
+      "title": "Lithium",
+      "duration": "4:00"
+    },
+    {
+      "type_": "track",
+      "position": "2-08",
+      "title": "Sonic (Oliver Lieb Remix)",
+      "duration": "3:31"
+    },
+    {
+      "type_": "track",
+      "position": "2-09",
+      "title": "Lunarcity",
+      "duration": "4:38"
+    },
+    {
+      "type_": "track",
+      "position": "2-10",
+      "title": "Minimal Exploitation",
+      "duration": "3:02"
+    },
+    {
+      "type_": "track",
+      "position": "2-11",
+      "title": "The Fade (Oliver Lieb Mix)",
+      "duration": "5:33"
+    },
+    {
+      "type_": "track",
+      "position": "2-12",
+      "title": "Backstabber",
+      "duration": "4:09"
+    },
+    {
+      "type_": "track",
+      "position": "2-13",
+      "title": "Angel Dust",
+      "duration": "5:05"
+    },
+    {
+      "type_": "track",
+      "position": "2-14",
+      "title": "Open The Ice (Yves De Ruyter Mix)",
+      "duration": "6:53"
+    },
+    {
+      "type_": "track",
+      "position": "2-15",
+      "title": "Codec",
+      "duration": "6:46"
+    },
+    {
+      "type_": "track",
+      "position": "2-16",
+      "title": "Factor Y (Niels Van Gogh Remix)",
+      "duration": "1:02"
+    }
+  ]
+}
