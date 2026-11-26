@@ -8,11 +8,9 @@ import { artistName, normalizeName } from "./matching.mjs";
 export const FUZZY_MAX_MEAN_MS = 2000;
 export const FUZZY_MAX_TRACK_MS = 5000;
 
-// A corroborated album may contain one catalog typo, but at least 90% of
-// ten or more tracks must agree within three seconds; never discard timings.
+// For one catalog timing error, at least 90% of tracks must agree within three seconds.
 const OUTLIER_MAX_MS = 30000;
 const CORROBORATED_TRACK_MS = 3000;
-const CORROBORATED_MIN_TRACKS = 10;
 
 function rejection(score) {
   if (score.trackCountDifference) return "Track count differs";
@@ -102,7 +100,6 @@ export function rankCandidates(toc, candidates) {
       const isolatedCatalogError = Boolean(
         medium.corroboratedNames &&
         known.length === lengths.length &&
-        lengths.length >= CORROBORATED_MIN_TRACKS &&
         outliers.length === 1 &&
         inliers.length / lengths.length >= 0.9 &&
         Math.max(...known) <= OUTLIER_MAX_MS &&

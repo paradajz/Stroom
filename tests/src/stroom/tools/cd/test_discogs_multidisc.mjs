@@ -153,6 +153,62 @@ try {
       bad.tracklist.at(-1).title = "Unrelated track";
     assert.equal((await verify(bad)).candidates.length, 0, change);
   }
+
+  // A differently titled box set can supply the cover for its matching disc.
+  const emptyTitles = [
+    { search: seed, response: { results: [] } },
+    { search: seed, relaxed: true, response: { results: [] } },
+  ];
+  const box = { ...coverRelease, title: "Box set" };
+  const artwork = { ...options, artworkOnly: true };
+  const fallbackRequests = [];
+  globalThis.fetch = async (url) => {
+    const { pathname, searchParams } = new URL(url);
+    fallbackRequests.push(pathname);
+    if (pathname === "/database/search") {
+      assert.equal(
+        searchParams.get("track"),
+        "Child in Paradise (Co-Fusion mix)",
+      );
+      assert.equal(searchParams.get("artist"), seed.artist);
+      assert.equal(searchParams.has("release_title"), false);
+      return Response.json({ results: [{ id: box.id }] });
+    }
+    assert.equal(pathname, "/releases/" + box.id);
+    return Response.json(box);
+  };
+  const found = await verifyDiscogs([seed], artwork, emptyTitles);
+  assert.deepEqual(fallbackRequests, [
+    "/database/search",
+    "/releases/" + box.id,
+  ]);
+  assert.equal(found.candidates[0].id, "discogs-25442686-disc-2");
+  assert.equal(found.candidates[0].verification.artworkTrack, titles[3]);
+  const replay = await verifyDiscogs([seed], artwork, found.raw);
+  assert.deepEqual(replay.candidates, found.candidates);
+  assert.equal(
+    (await verifyDiscogs([seed], options, found.raw)).candidates.length,
+    0,
+  );
+  for (const change of ["order", "artist", "edition"]) {
+    const changed = structuredClone(box);
+    if (change === "artist") changed.artists = [{ name: "Different artist" }];
+    if (change === "order") {
+      const tracks = changed.tracklist.slice(-4);
+      [tracks[0].title, tracks[1].title] = [tracks[1].title, tracks[0].title];
+    }
+    if (change === "edition")
+      changed.tracklist.at(-1).title += " (2005 Version)";
+    const raw = found.raw.map((item) =>
+      item.release ? { release: changed } : item,
+    );
+    assert.equal(
+      (await verifyDiscogs([seed], artwork, raw)).candidates.length,
+      0,
+      change,
+    );
+  }
+  assert.equal(fallbackRequests.length, 2);
 } finally {
   globalThis.fetch = originalFetch;
   await rm(directory, { recursive: true, force: true });

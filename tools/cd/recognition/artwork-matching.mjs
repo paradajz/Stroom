@@ -64,6 +64,20 @@ export function artworkSearchTitles(title) {
   ];
 }
 
+// Prefer the longest normalized title as a distinctive query. Ties keep disc order.
+export function artworkSearchTrack(tracks) {
+  let bestTitle;
+  let bestLength = 0;
+  for (const title of tracks) {
+    const length = normalizeName(title).length;
+    if (length > bestLength) {
+      bestTitle = title;
+      bestLength = length;
+    }
+  }
+  return bestTitle;
+}
+
 export function artworkArtist(name) {
   const text = String(name ?? "");
   return text.length > MAX_ALIAS_TEXT

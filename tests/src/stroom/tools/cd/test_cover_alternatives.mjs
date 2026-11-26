@@ -136,12 +136,14 @@ try {
     calls = [];
     result = report(other);
     await resolveCover(result, options);
-    assert.equal(calls.length, 2);
+    assert.equal(calls.length, 3);
     assert.ok(
       calls.every((url) => new URL(url).hostname === "api.discogs.com"),
     );
     assert.equal(new URL(calls[0]).searchParams.get("artist"), "Artist");
     assert.equal(new URL(calls[1]).searchParams.has("artist"), false);
+    assert.equal(new URL(calls[2]).searchParams.get("artist"), "Artist");
+    assert.equal(new URL(calls[2]).searchParams.get("track"), "Second");
     assert.equal(result.candidates[0].coverFile, undefined);
   }
 
@@ -325,7 +327,6 @@ try {
     "different-mix",
     "wrong-song",
     "artist",
-    "short-disc",
   ]) {
     result = structuredClone(gnudbFixture);
     const catalog = result.coverFallback.raw[1].release;
@@ -344,12 +345,6 @@ try {
       list[16].title = "King Of Snake (Extended Mix)";
     if (change === "wrong-song") list[1].title = "Unrelated song";
     if (change === "artist") catalog.artists = [{ name: "Different Artist" }];
-    if (change === "short-disc") {
-      catalog.tracklist.length = 9;
-      result.candidates[0].media[0].tracks.length = 9;
-      result.toc.leadout = result.toc.offsets[9];
-      result.toc.offsets.length = 9;
-    }
     calls = [];
     await resolveCover(result, options);
     assert.equal(result.candidates[0].coverFile, undefined, change);
@@ -359,6 +354,17 @@ try {
       "Unsafe artwork variant must not be downloaded: " + change,
     );
   }
+  result = structuredClone(gnudbFixture);
+  result.coverFallback.raw[1].release.tracklist.length = 9;
+  result.candidates[0].media[0].tracks.length = 9;
+  result.toc.leadout = result.toc.offsets[9];
+  result.toc.offsets.length = 9;
+  await resolveCover(result, options);
+  assert.equal(
+    result.candidates[0].coverSource?.matchBasis,
+    "artist-album-track-name-variants-and-timings",
+    "All nine ordered track names agree after normalizing artwork variants",
+  );
   console.log(
     "PASS: existing cover candidates, metadata preservation, cache, rejection and retries",
   );

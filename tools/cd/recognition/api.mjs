@@ -1,5 +1,6 @@
 import { cd, metadata } from "../../contracts/load.mjs";
 import { parseToc } from "./disc.mjs";
+import { displayArtist } from "./matching.mjs";
 
 export const ID_PATTERN = /^[A-Za-z0-9._]{27}-$/;
 export const MAX_JSON_BYTES = cd.CD_LOOKUP_RESPONSE_BYTES;
@@ -110,11 +111,11 @@ export function lookupResponse(report, serving = true) {
       status: "matched",
       track_count: medium.tracks.length,
       album: text(winner.title),
-      artist: text(winner.artist),
+      artist: text(displayArtist(winner.artist)),
       tracks: medium.tracks.map((track, i) => ({
         number: i + 1,
         title: text(track.title),
-        artist: text(track.artist),
+        artist: text(displayArtist(track.artist)),
       })),
       artwork: artworkState(report, serving),
     },

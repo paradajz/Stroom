@@ -14,6 +14,7 @@ import { parseArgs } from "node:util";
 import { mkdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { discId } from "./disc.mjs";
+import { displayArtist } from "./matching.mjs";
 import { resolveCover, coverRetryAt } from "./cover.mjs";
 import { cachedReport, saveReport, unsuccessfulDeadline } from "./cache.mjs";
 import { DiskCacheQuota, cacheFileDisc } from "./quota.mjs";
@@ -509,7 +510,7 @@ function logReport(job, report, saved) {
     (candidate) => candidate.id === report.selected?.releaseId,
   );
   const outcome = selected
-    ? `${report.match.toUpperCase()}: ${logText(selected.artist, 100)} — ${logText(selected.title, 160)}; disc ${report.selected.mediumPosition}, ${report.toc.offsets.length} tracks; artwork ${artworkState(report, Boolean(directory)).status}`
+    ? `${report.match.toUpperCase()}: ${logText(displayArtist(selected.artist), 100)} — ${logText(selected.title, 160)}; disc ${report.selected.mediumPosition}, ${report.toc.offsets.length} tracks; artwork ${artworkState(report, Boolean(directory)).status}`
     : `no match; ${report.candidateCount} candidate(s)`;
   console.log(
     `${job.id}: ${outcome}; ${report.lookupMilliseconds} ms; Report: ${saved ? logText(join(directory, `${job.id}.json`), 512) : "not saved"}`,

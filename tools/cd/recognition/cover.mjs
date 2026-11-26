@@ -196,7 +196,6 @@ function isolatedTitleTypo(candidate, medium) {
   )?.tracks;
   if (
     !tracks ||
-    tracks.length < 10 ||
     tracks.length !== medium.tracks.length ||
     candidate.verification.agreeingTrackNames !== tracks.length - 1
   )
@@ -211,6 +210,20 @@ function isolatedTitleTypo(candidate, medium) {
       singleTitleTypo(track.title, medium.tracks[i].title),
     )
   );
+}
+
+function discogsCoverBasis({ verification, comparison }, titleTypo) {
+  if (verification.artworkTrack) return "artist-all-ordered-track-names";
+  if (verification.artworkGenericCredit)
+    return "album-ordered-track-names-and-exact-disc-seconds";
+  if (verification.artworkNameAliases) return "artist-album-track-name-aliases";
+  if (comparison.rejection)
+    return titleTypo
+      ? "artist-album-track-names-isolated-typo"
+      : "artist-album-all-track-names";
+  return verification.artworkNameVariants
+    ? "artist-album-track-name-variants-and-timings"
+    : "artist-album-track-names-and-timings";
 }
 
 /** Missing artwork never invalidates an accepted metadata match. */
@@ -237,7 +250,7 @@ export async function fallbackCover(report, options) {
           tracks: medium.tracks.map((track) => track.title),
         },
       ],
-      { ...options, artworkOnly: true },
+      { ...options, artworkOnly: true, artworkToc: report.toc },
       (report.coverFallback?.raw ?? report.discogs?.raw ?? []).filter(
         (item) => !report.coverFallback || !item.error,
       ),
@@ -289,15 +302,7 @@ export async function fallbackCover(report, options) {
         winner,
         candidate,
         "discogs",
-        candidate.verification.artworkNameAliases
-          ? "artist-album-track-name-aliases"
-          : candidate.comparison.rejection
-            ? titleTypo
-              ? "artist-album-track-names-isolated-typo"
-              : "artist-album-all-track-names"
-            : candidate.verification.artworkNameVariants
-              ? "artist-album-track-name-variants-and-timings"
-              : "artist-album-track-names-and-timings",
+        discogsCoverBasis(candidate, titleTypo),
       );
       return;
     }

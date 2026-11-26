@@ -3,6 +3,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { verifyDiscogs } from "../../../../../tools/cd/recognition/discogs.mjs";
 import { lookupDisc } from "../../../../../tools/cd/recognition/musicbrainz.mjs";
 import { fallbackCover } from "../../../../../tools/cd/recognition/cover.mjs";
+import { lookupResponse } from "../../../../../tools/cd/recognition/api.mjs";
 import { coverInput } from "./cover_fixture.mjs";
 
 const release = {
@@ -100,6 +101,7 @@ try {
 
   // Compilation aliases are equivalent, not a wildcard for any artist.
   for (const [credit, provider] of [
+    ["Various Artist", "Various"],
     ["Various Artists", "Various"],
     ["Various", "Various Artists"],
   ]) {
@@ -250,6 +252,141 @@ try {
     "Artist A",
     "Artist B",
   ]);
+
+  const titles = [
+    "Tahtyb",
+    "Dance of the Sufi",
+    "Beledi Sahara",
+    "Dervish Raqs",
+    "Petrouge",
+    "Mismar we Attaa",
+    "Fusion of Ra",
+    "Charm of the Snake",
+    "Chiftetelli Groove",
+    "Oryanta Tansi",
+    "Xumara Raqs",
+    "Salwar Roire",
+    "Rabibi Omar",
+  ];
+  const discogsTitles = [...titles];
+  for (const [index, title] of [
+    [0, "Tahtiyb"],
+    [5, "Mizmar Me Attaa"],
+    [8, "Chiftelli Groove"],
+    [10, "Zumara Raqs"],
+    [11, "Shalwar Noire"],
+    [12, "Habibi Omar"],
+  ])
+    discogsTitles[index] = title;
+  const durations = [
+    225, 272, 234, 277, 180, 264, 158, 344, 221, 399, 463, 291, 233,
+  ];
+  let leadout = 150;
+  const offsets = durations.map((seconds, i) => {
+    const start = leadout;
+    leadout += seconds * 75 + (i % 2 ? -37 : 37);
+    return start;
+  });
+  const artworkToc = { offsets, leadout };
+  const seed = {
+    source: "gnudb",
+    id: "gnudb-disc",
+    artist: "Various Artist",
+    title: "Arabian Nights",
+    tracks: titles,
+  };
+  const worldTribe = {
+    ...release,
+    id: 1507299,
+    title: seed.title,
+    artists: [{ name: "World Tribe (3)" }],
+    tracklist: discogsTitles.map((title, i) => ({
+      title,
+      position: String(i + 1),
+      type_: "track",
+      duration:
+        Math.floor(durations[i] / 60) +
+        ":" +
+        String(durations[i] % 60).padStart(2, "0"),
+    })),
+  };
+  const album = {
+    ...seed,
+    media: [
+      {
+        position: 1,
+        tracks: titles.map((title, i) => ({
+          title,
+          artist: i === 0 ? "Guest Artist" : seed.artist,
+        })),
+      },
+    ],
+  };
+  const compilationReport = {
+    discId: "arabian-nights",
+    toc: artworkToc,
+    selected: { releaseId: seed.id, mediumPosition: 1 },
+    candidates: [album],
+    discogs: { raw: cached(seed, worldTribe) },
+  };
+  await fallbackCover(compilationReport, { ...options, directory });
+  assert.equal(album.coverSource.releaseId, "discogs-1507299");
+  assert.equal(
+    album.coverSource.matchBasis,
+    "album-ordered-track-names-and-exact-disc-seconds",
+  );
+  const { body } = lookupResponse(compilationReport);
+  assert.equal(body.artwork.status, "available");
+  assert.equal(body.artist, "Various Artists");
+  assert.equal(body.tracks[0].artist, "Guest Artist");
+  assert.equal(body.tracks[1].artist, "Various Artists");
+  assert.equal(album.artist, "Various Artist");
+
+  const artwork = { ...options, artworkToc, artworkOnly: true };
+  for (const trackCount of [1, 2]) {
+    const tracklist = release.tracklist.slice(0, trackCount);
+    const input = {
+      ...seed,
+      title: release.title,
+      tracks: tracklist.map((track) => track.title),
+    };
+    const shortToc = {
+      offsets: toc.offsets.slice(0, trackCount),
+      leadout: toc.offsets[trackCount] ?? toc.leadout,
+    };
+    const result = await verifyDiscogs(
+      [input],
+      { ...artwork, artworkToc: shortToc },
+      cached(input, { ...release, tracklist }),
+    );
+    assert.equal(result.candidates[0]?.verification.artworkGenericCredit, true);
+  }
+  for (const [input, verification, candidate] of [
+    [seed, options, worldTribe],
+    [{ ...seed, source: "musicbrainz" }, artwork, worldTribe],
+    [{ ...seed, artist: "Different band" }, artwork, worldTribe],
+    [seed, artwork, { ...worldTribe, title: "Different album" }],
+    [seed, artwork, { ...worldTribe, formats: [{ name: "Vinyl" }] }],
+  ]) {
+    assert.equal(
+      (await verifyDiscogs([input], verification, cached(input, candidate)))
+        .candidates.length,
+      0,
+    );
+  }
+  for (const change of [
+    { duration: "4:33" },
+    { duration: "" },
+    { title: "Different song" },
+  ]) {
+    const candidate = structuredClone(worldTribe);
+    Object.assign(candidate.tracklist[1], change);
+    assert.equal(
+      (await verifyDiscogs([seed], artwork, cached(seed, candidate))).candidates
+        .length,
+      0,
+    );
+  }
 } finally {
   globalThis.fetch = originalFetch;
   await rm(directory, { recursive: true, force: true });

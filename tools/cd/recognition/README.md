@@ -222,8 +222,14 @@ Cover resolution tries the selected release, then matching MusicBrainz releases
 already retrieved, before searching Discogs. Artwork from another edition must
 be corroborated by artist, album and track information. Borrowing a cover never
 replaces the selected track metadata. The report records the cover's source.
+When GnuDB credits a compilation to Various Artists, a named Discogs artist
+can supply artwork if the CD album title matches, both tracklists have the
+same length, a majority of the names match in order,
+and every Discogs duration matches the physical CD to the nearest second.
+The client and result log display the singular credit `Various Artist` as
+`Various Artists`.
 For numbered series, artwork searches can try the main album title with Arabic
-and Roman volume numbers, using at most four search variants and eight fetched
+and Roman volume numbers, using at most four title queries and eight fetched
 Discogs releases. Volume numbers remain significant. Differences in subtitles,
 trailing `Pres.`/`Presents` credits and `Jr.`/`Junior` spellings are accepted only
 when every track name agrees in order after these credit aliases, regardless of
@@ -231,8 +237,14 @@ disc length (for example, all six names on a six-track release must match).
 This can establish artwork when Discogs omits timings; it does not
 change recognized labels or metadata matching. Saved reports record this basis
 as `artist-album-track-name-aliases`.
+If every title query returns zero releases and the disc has a named artist,
+the service makes one more search using the artist and the longest normalized
+track title (the earliest in disc order on a tie). A CD found this way can
+supply artwork under a different album title when the artist and every track
+name match in order on one disc. The report records the query as `artworkTrack`
+and the cover's match basis as `artist-all-ordered-track-names`.
 When GnuDB omits a radio-edit suffix or spells a possessive differently, artwork
-matching can accept those variants for at least 90% of ten or more ordered
+matching can accept those variants for at least 90% of the ordered
 tracks, provided every duration is present and the normal timing limits pass.
 Other mix qualifiers remain significant. These artwork variants do not relax
 metadata recognition or enable its isolated timing-error exception. Detailed

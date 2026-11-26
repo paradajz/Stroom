@@ -5,10 +5,16 @@ export const normalizeName = (text) =>
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]/gu, "");
 
-/** MusicBrainz and Discogs use different names for the same compilation credit. */
+/** Catalogs use different names for the same compilation credit. */
 export function artistName(text) {
   const name = normalizeName(String(text ?? "").replace(/\s*\(\d+\)$/u, ""));
-  return name === "variousartists" ? "various" : name;
+  return /^variousartists?$/u.test(name) ? "various" : name;
+}
+
+export function displayArtist(credit) {
+  return /^various artist$/iu.test(String(credit ?? "").trim())
+    ? "Various Artists"
+    : credit;
 }
 
 /** Compare complete credits without guessing artist boundaries from punctuation. */

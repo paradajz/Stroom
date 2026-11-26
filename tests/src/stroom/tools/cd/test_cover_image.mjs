@@ -113,7 +113,10 @@ try {
   assert.ok(resized.length < 512 * 1024);
 
   let downloads = 0;
-  globalThis.fetch = async () => {
+  globalThis.fetch = async (url) => {
+    if (new URL(url).pathname === "/database/search")
+      return Response.json({ results: [] });
+    assert.equal(url, "https://cover-size.test/image");
     downloads++;
     return new Response(
       new ReadableStream({
@@ -148,7 +151,7 @@ try {
   globalThis.fetch = async (url) =>
     String(url).includes("alternative-size")
       ? new Response(coverInput, { headers: { "content-type": "image/png" } })
-      : oversized();
+      : oversized(url);
   await resolveCover(fallback, options);
   assert.ok(
     fallback.candidates[0].coverFile,

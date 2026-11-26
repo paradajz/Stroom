@@ -6,6 +6,7 @@ import {
 import {
   matchingArtworkTitles,
   artworkSearchTitles,
+  artworkSearchTrack,
   artworkArtist,
   artworkCredit,
 } from "./artwork-matching.mjs";
@@ -78,6 +79,18 @@ function milliseconds(text) {
   return match ? (Number(match[1]) * 60 + Number(match[2])) * 1000 : null;
 }
 
+// Discogs publishes whole seconds. Compare each track to the physical CD.
+function matchesDiscSeconds(tracks, toc) {
+  return (
+    tracks.length === toc?.offsets.length &&
+    tracks.every((track, i) => {
+      const frames = (toc.offsets[i + 1] ?? toc.leadout) - toc.offsets[i];
+      const seconds = Math.round(frames / cd.CD_SECTORS_PER_SECOND);
+      return seconds > 0 && milliseconds(track.duration) === seconds * 1000;
+    })
+  );
+}
+
 /** Preserve explicit disc numbers; reject ambiguous, gapped or nested track lists. */
 function releaseDiscs(tracklist = []) {
   if (tracklist.length > MAX_MEDIA * cd.CD_MAX_TRACKS)
@@ -113,7 +126,7 @@ function releaseDiscs(tracklist = []) {
 /** Provider metadata seeds searches; matching CD releases supply their own timings. */
 export async function verifyDiscogs(
   seeds,
-  { userAgent, artworkOnly = false, signal },
+  { userAgent, artworkOnly = false, artworkToc, signal },
   cached = [],
 ) {
   checkSignal(signal);
@@ -168,7 +181,17 @@ export async function verifyDiscogs(
             item.title === variant.title && item.artist === variant.artist,
         ) === index,
     );
+    if (
+      artworkOnly &&
+      artistName(seed.artist) &&
+      artistName(seed.artist) !== "various"
+    ) {
+      const track = artworkSearchTrack(seed.tracks);
+      if (track) variants.push({ artist: seed.artist, track, relaxed: false });
+    }
+    let titleHadResults = false;
     for (const variant of variants) {
+      if (variant.track && titleHadResults) break;
       check();
       const before = candidates.length;
       let results;
@@ -179,6 +202,7 @@ export async function verifyDiscogs(
             item.search &&
             Boolean(item.relaxed) === variant.relaxed &&
             item.artworkQuery === variant.artworkQuery &&
+            item.artworkTrack === variant.track &&
             normalize(item.search.title) === normalize(seed.title) &&
             artistName(item.search.artist) === artistName(seed.artist),
         );
@@ -187,7 +211,9 @@ export async function verifyDiscogs(
         } else {
           const params = new URLSearchParams({
             ...(variant.artist ? { artist: variant.artist } : {}),
-            release_title: variant.title,
+            ...(variant.track
+              ? { track: variant.track }
+              : { release_title: variant.title }),
             type: "release",
             format: "CD",
             per_page: String(MAX_RELEASES),
@@ -204,6 +230,7 @@ export async function verifyDiscogs(
         }
         raw.push({
           search: seed,
+          ...(variant.track && { artworkTrack: variant.track }),
           ...(variant.relaxed ? { relaxed: true } : {}),
           ...(variant.artworkQuery
             ? { artworkQuery: variant.artworkQuery }
@@ -213,6 +240,7 @@ export async function verifyDiscogs(
         reportText({ raw });
         if (!Array.isArray(results.results))
           throw Error("Invalid Discogs search response");
+        if (!variant.track && results.results.length) titleHadResults = true;
       } catch (error) {
         check(error);
         if (liveSearch) monitor.providerError("api.discogs.com", error);
@@ -259,9 +287,19 @@ export async function verifyDiscogs(
             artworkOnly &&
             (sameTitle || matchingArtworkTitles(release.title, seed.title)) &&
             matchingReleaseArtists(seed, release.artists, true);
+          const genericCredit =
+            artworkOnly &&
+            !strictLabels &&
+            !aliasLabels &&
+            sameTitle &&
+            seed.source === "gnudb" &&
+            artistName(seed.artist) === "various" &&
+            release.artists?.some((artist) => artistName(artist.name));
           if (
             !release.formats?.some((format) => format.name === "CD") ||
-            (!strictLabels && !aliasLabels)
+            (variant.track
+              ? !matchingReleaseArtists(seed, release.artists)
+              : !strictLabels && !aliasLabels && !genericCredit)
           ) {
             rejections.push({
               releaseId: result.id,
@@ -277,10 +315,38 @@ export async function verifyDiscogs(
             });
           for (const { position, tracks, numbered } of discs) {
             if (tracks.length !== seed.tracks.length) continue;
-            const agreeing = tracks.filter(
-              (track, i) =>
-                trackName(track.title) === trackName(seed.tracks[i]),
-            ).length;
+            const normalizeTrack = variant.track ? normalize : trackName;
+            const agreeing = tracks.filter((track, i) => {
+              const name = normalizeTrack(track.title);
+              if ((variant.track || genericCredit) && !name) return false;
+              return name === normalizeTrack(seed.tracks[i]);
+            }).length;
+            if (variant.track && agreeing !== tracks.length) {
+              rejections.push({
+                releaseId: result.id,
+                mediumPosition: position,
+                reason:
+                  "Artist-and-track search requires all track names in order",
+                agreeingTrackNames: agreeing,
+                trackCount: tracks.length,
+              });
+              continue;
+            }
+            if (
+              genericCredit &&
+              (agreeing <= tracks.length / 2 ||
+                !matchesDiscSeconds(tracks, artworkToc))
+            ) {
+              rejections.push({
+                releaseId: result.id,
+                mediumPosition: position,
+                reason:
+                  "Generic artist credit requires a majority of ordered names and all rounded disc timings",
+                agreeingTrackNames: agreeing,
+                trackCount: tracks.length,
+              });
+              continue;
+            }
             const creditAgreeing = artworkOnly
               ? tracks.filter((track, i) => {
                   const name = trackName(artworkCredit(track.title));
@@ -318,9 +384,13 @@ export async function verifyDiscogs(
               !corroborated &&
               !artworkAliases &&
               artworkOnly &&
-              tracks.length >= 10 &&
               artworkAgreeing / tracks.length >= 0.9;
-            if (!corroborated && !artworkVariants && !artworkAliases) {
+            if (
+              !corroborated &&
+              !artworkVariants &&
+              !artworkAliases &&
+              !genericCredit
+            ) {
               rejections.push({
                 releaseId: result.id,
                 mediumPosition: position,
@@ -359,9 +429,11 @@ export async function verifyDiscogs(
               url: `https://www.discogs.com/release/${result.id}`,
               verification: {
                 seedSource: seed.source,
+                ...(variant.track && { artworkTrack: variant.track }),
                 seedId: seed.id,
                 agreeingTrackNames: agreeing,
                 trackCount: tracks.length,
+                ...(genericCredit && { artworkGenericCredit: true }),
                 ...(artworkAliases
                   ? {
                       artworkNameAliases: true,
